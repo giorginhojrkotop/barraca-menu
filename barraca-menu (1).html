@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Barraca Mare Mare – Sunset & Cocktails</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Georgia',serif;background:#FAFAF7;color:#1A2020;min-height:100vh;}
+  :root{
+    --teal:#1A8FA0;--tealDk:#136878;--gold:#E8A820;
+    --bg:#FAFAF7;--card:#fff;--text:#1A2020;--muted:#7A9090;--border:#E2EAE8;
+  }
+
+  /* ── HERO ── */
+  .hero{
+    background:linear-gradient(170deg,#0e5c6b 0%,#1A8FA0 60%,#1aaa8a 100%);
+    padding:32px 20px 28px;text-align:center;position:relative;
+  }
+  .hero h1{margin:10px 0 0;font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.3px;}
+  .hero .subtitle{font-size:12px;letter-spacing:0.2em;color:var(--gold);margin-top:5px;text-transform:uppercase;}
+  .lang-toggle{position:absolute;top:16px;right:16px;display:flex;gap:4px;}
+  .lang-btn{padding:5px 12px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.3);
+    cursor:pointer;font-size:12px;font-family:Georgia,serif;font-weight:400;
+    background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.85);transition:all .15s;}
+  .lang-btn.active{background:#fff;color:var(--teal);border-color:#fff;font-weight:700;}
+  .staff-btn{position:absolute;top:16px;left:16px;background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:rgba(255,255,255,0.3);
+    padding:4px 10px;font-size:11px;cursor:pointer;font-family:sans-serif;}
+
+  /* ── SEARCH & TABS ── */
+  .search-wrap{padding:14px 16px 0;max-width:640px;margin:0 auto;}
+  .search-wrap input{width:100%;padding:11px 16px;border-radius:12px;
+    border:1.5px solid var(--border);background:#fff;color:var(--text);
+    font-size:14px;outline:none;font-family:Georgia,serif;}
+  .tabs-wrap{padding:12px 16px 4px;max-width:640px;margin:0 auto;}
+  .tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+  .tab-btn{flex-shrink:0;padding:7px 15px;border-radius:50px;border:1.5px solid var(--border);
+    cursor:pointer;font-size:13px;font-family:Georgia,serif;background:#fff;
+    color:var(--muted);font-weight:400;transition:all .15s;}
+  .tab-btn.active{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:700;}
+
+  /* ── MENU ITEMS ── */
+  .items-wrap{padding:10px 16px 48px;max-width:640px;margin:0 auto;}
+  .cat-header{display:flex;align-items:center;gap:10px;margin:18px 0 12px;}
+  .cat-header span.emoji{font-size:20px;}
+  .cat-header span.label{font-size:14px;font-weight:700;color:var(--tealDk);
+    letter-spacing:0.05em;text-transform:uppercase;}
+  .cat-header .divider{flex:1;height:1px;background:var(--border);}
+  .item-card{background:var(--card);border-radius:14px;padding:14px 16px;
+    border:1px solid var(--border);display:flex;align-items:center;gap:14px;
+    box-shadow:0 1px 4px rgba(26,143,160,.06);margin-bottom:10px;}
+  .item-info{flex:1;min-width:0;}
+  .item-name-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .item-name{font-weight:700;font-size:15px;color:var(--text);}
+  .item-desc{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.5;}
+  .item-price{min-width:48px;text-align:right;font-weight:800;font-size:18px;
+    color:var(--gold);font-family:sans-serif;}
+  .tag{font-size:10px;font-family:sans-serif;font-weight:700;
+    padding:2px 8px;border-radius:50px;letter-spacing:0.04em;}
+  .tag-best{background:#FFF3C4;color:#7B5200;border:1px solid #E8C840;}
+  .tag-new{background:#E6F6FF;color:#0D5C8A;border:1px solid #63B3ED;}
+  .tag-chef{background:#F0FFF4;color:#1A5C30;border:1px solid #68D391;}
+  .empty{text-align:center;color:var(--muted);padding:48px;font-size:15px;}
+
+  /* ── FOOTER ── */
+  .footer{text-align:center;padding:20px 16px 32px;border-top:1px solid var(--border);
+    color:var(--muted);font-size:12px;}
+  .footer .f-name{font-weight:700;color:var(--teal);font-size:13px;margin-top:4px;}
+  .footer .f-sub{margin-top:2px;letter-spacing:0.1em;font-size:11px;
+    text-transform:uppercase;color:var(--gold);}
+
+  /* ── PIN MODAL ── */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;
+    display:flex;align-items:center;justify-content:center;}
+  .pin-box{background:#fff;border-radius:16px;padding:28px 24px;width:280px;
+    box-shadow:0 8px 32px rgba(0,0,0,.2);text-align:center;}
+  .pin-box .lock{font-size:20px;margin-bottom:4px;}
+  .pin-box h3{font-weight:700;font-size:16px;margin-bottom:16px;color:var(--tealDk);}
+  .pin-box input{width:100%;padding:11px;text-align:center;border-radius:8px;
+    font-size:20px;border:2px solid var(--border);outline:none;
+    letter-spacing:0.3em;margin-bottom:8px;font-family:sans-serif;}
+  .pin-box input.error{border-color:#E53E3E;}
+  .pin-error{color:#E53E3E;font-size:12px;margin-bottom:8px;}
+  .pin-submit{width:100%;padding:11px;background:var(--teal);color:#fff;
+    border:none;border-radius:8px;font-size:15px;font-weight:700;
+    font-family:Georgia,serif;cursor:pointer;}
+
+  /* ── ADMIN PANEL ── */
+  .admin-wrap{display:none;min-height:100vh;background:#F5F7FA;}
+  .admin-header{background:var(--tealDk);color:#fff;padding:18px 20px;}
+  .admin-header-inner{max-width:680px;margin:0 auto;display:flex;
+    justify-content:space-between;align-items:center;}
+  .admin-header .sub{font-size:11px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;}
+  .admin-header h1{margin:0;font-size:20px;font-weight:700;}
+  .admin-btns{display:flex;gap:8px;}
+  .btn-add{background:var(--gold);border:none;border-radius:8px;padding:8px 16px;
+    cursor:pointer;font-size:13px;font-weight:700;color:#1A2020;font-family:Georgia,serif;}
+  .btn-back{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+    border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;
+    color:#fff;font-family:Georgia,serif;}
+  .admin-content{max-width:680px;margin:0 auto;padding:16px;}
+  .admin-cat-label{font-size:13px;font-weight:700;color:var(--teal);
+    letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;margin-top:20px;}
+  .admin-row{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px;
+    border:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+  .admin-row-info{flex:1;}
+  .admin-row-name{font-weight:700;font-size:14px;}
+  .admin-row-en{font-size:12px;color:var(--muted);}
+  .admin-row-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+  .admin-row-price{font-weight:800;font-size:17px;color:var(--gold);
+    font-family:sans-serif;min-width:40px;text-align:right;}
+  .btn-edit{padding:5px 12px;border-radius:8px;border:1px solid var(--border);
+    background:#fff;cursor:pointer;font-size:12px;color:var(--teal);font-family:Georgia,serif;}
+  .btn-del{padding:5px 12px;border-radius:8px;border:1px solid #FCA5A5;
+    background:#FFF5F5;cursor:pointer;font-size:12px;color:#C53030;font-family:Georgia,serif;}
+
+  /* ── FORM MODAL ── */
+  .form-sheet{position:fixed;inset:0;z-index:200;display:flex;align-items:flex-end;justify-content:center;}
+  .form-sheet .bg{position:absolute;inset:0;background:rgba(0,0,0,.5);}
+  .form-inner{position:relative;background:#fff;border-radius:20px 20px 0 0;
+    width:100%;max-width:680px;padding:24px 20px 36px;max-height:85vh;overflow-y:auto;}
+  .form-inner h2{margin:0 0 18px;font-size:18px;color:var(--tealDk);}
+  .form-label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;
+    font-family:sans-serif;letter-spacing:0.08em;text-transform:uppercase;}
+  .form-field{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);
+    font-size:14px;font-family:Georgia,serif;outline:none;margin-bottom:12px;}
+  .form-actions{display:flex;gap:10px;margin-top:20px;}
+  .btn-save{flex:1;padding:13px;background:var(--teal);color:#fff;border:none;
+    border-radius:10px;font-size:15px;font-weight:700;font-family:Georgia,serif;cursor:pointer;}
+  .btn-cancel{padding:13px 20px;background:#f0f0f0;border:none;border-radius:10px;
+    font-size:15px;cursor:pointer;font-family:Georgia,serif;}
+
+  /* ── TOAST ── */
+  .toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);
+    background:var(--teal);color:#fff;padding:10px 24px;border-radius:50px;
+    font-size:14px;font-weight:700;z-index:9999;
+    box-shadow:0 3px 12px rgba(0,0,0,.2);display:none;}
+
+  .hidden{display:none!important;}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅ Αποθηκεύτηκε!</div>
+
+<!-- ════════════════════════════════════════
+     CUSTOMER MENU
+════════════════════════════════════════ -->
+<div id="menu-view">
+
+  <!-- PIN MODAL -->
+  <div class="overlay hidden" id="pin-modal">
+    <div class="pin-box">
+      <div class="lock">🔒</div>
+      <h3>Κωδικός Staff</h3>
+      <input type="password" id="pin-input" placeholder="••••" maxlength="10"
+        oninput="document.getElementById('pin-err').style.display='none'"
+        onkeydown="if(event.key==='Enter') checkPin()"/>
+      <div class="pin-error" id="pin-err" style="display:none">Λάθος κωδικός</div>
+      <button class="pin-submit" onclick="checkPin()">Είσοδος</button>
+    </div>
+    <div style="position:absolute;inset:0;z-index:-1" onclick="closePinModal()"></div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <svg width="100" height="100" viewBox="0 0 200 200" fill="none">
+      <ellipse cx="85" cy="118" rx="32" ry="32" fill="#F5A623"/>
+      <path d="M30 130 Q60 120 90 130 Q120 140 150 130 Q165 125 175 130" stroke="#7EC8E3" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M25 142 Q55 132 85 142 Q115 152 145 142 Q162 136 178 142" stroke="#A8D8EA" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="128" cy="128" rx="18" ry="12" fill="#2D6B2A"/>
+      <path d="M100 160 Q98 130 95 100 Q93 80 92 60" stroke="#3D5A1A" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <path d="M115 162 Q118 135 122 108 Q125 88 130 65" stroke="#3D5A1A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M92 60 Q75 45 60 55" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M92 60 Q80 38 90 28" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M92 60 Q105 42 118 48" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M92 60 Q72 55 58 65" stroke="#3A7A20" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <path d="M92 60 Q100 50 114 55" stroke="#3A7A20" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <path d="M130 65 Q112 50 100 58" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M130 65 Q128 44 138 34" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M130 65 Q145 48 158 55" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M130 65 Q148 62 162 70" stroke="#3A7A20" stroke-width="4" stroke-linecap="round" fill="none"/>
+    </svg>
+    <h1>Barraca Mare Mare</h1>
+    <div class="subtitle">Sunset &amp; Cocktails</div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-el" onclick="setLang('el')">ΕΛ</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="staff-btn" onclick="openPinModal()">Staff</button>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <input type="text" id="search-input" placeholder="🔍  Αναζήτηση..." oninput="renderMenu()"/>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <div class="tabs" id="tabs-container"></div>
+  </div>
+
+  <!-- ITEMS -->
+  <div class="items-wrap" id="items-container"></div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div>🌅</div>
+    <div class="f-name">Barraca Mare Mare</div>
+    <div class="f-sub">Sunset &amp; Cocktails</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     ADMIN PANEL
+════════════════════════════════════════ -->
+<div class="admin-wrap" id="admin-view">
+  <div class="admin-header">
+    <div class="admin-header-inner">
+      <div>
+        <div class="sub">Διαχείριση</div>
+        <h1>Barraca Mare Mare</h1>
+      </div>
+      <div class="admin-btns">
+        <button class="btn-add" onclick="openForm(null)">+ Προσθήκη</button>
+        <button class="btn-back" onclick="showMenu()">← Μενού</button>
+      </div>
+    </div>
+  </div>
+  <div class="admin-content" id="admin-list"></div>
+</div>
+
+<!-- FORM MODAL -->
+<div class="form-sheet hidden" id="form-modal">
+  <div class="bg" onclick="closeForm()"></div>
+  <div class="form-inner">
+    <h2 id="form-title">➕ Νέο Προϊόν</h2>
+    <input type="hidden" id="f-id"/>
+    <label class="form-label">Κατηγορία</label>
+    <select class="form-field" id="f-cat">
+      <option value="Cocktails & Spirits">Cocktails &amp; Spirits</option>
+      <option value="Μπύρες & Κρασιά">Μπύρες &amp; Κρασιά</option>
+      <option value="Αναψυκτικά & Χυμοί">Αναψυκτικά &amp; Χυμοί</option>
+    </select>
+    <label class="form-label">Όνομα (ΕΛ)</label>
+    <input class="form-field" type="text" id="f-nameEl" placeholder="π.χ. Mojito Classico"/>
+    <label class="form-label">Όνομα (EN)</label>
+    <input class="form-field" type="text" id="f-nameEn" placeholder="e.g. Classic Mojito"/>
+    <label class="form-label">Περιγραφή (ΕΛ)</label>
+    <input class="form-field" type="text" id="f-descEl" placeholder="Υλικά στα ελληνικά"/>
+    <label class="form-label">Περιγραφή (EN)</label>
+    <input class="form-field" type="text" id="f-descEn" placeholder="Ingredients in English"/>
+    <label class="form-label">Τιμή (€)</label>
+    <input class="form-field" type="number" id="f-price" placeholder="π.χ. 10" min="0" step="0.5"/>
+    <label class="form-label">Ετικέτα</label>
+    <select class="form-field" id="f-tag">
+      <option value="">— Χωρίς ετικέτα —</option>
+      <option value="Bestseller">Bestseller</option>
+      <option value="Νέο">Νέο / New</option>
+      <option value="Σεφ">Σεφ / Chef's</option>
+    </select>
+    <div class="form-actions">
+      <button class="btn-save" onclick="saveForm()">Αποθήκευση</button>
+      <button class="btn-cancel" onclick="closeForm()">Άκυρο</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ────────────────────────────────────────────────────────────────────
+const DEFAULT_ITEMS = [
+  {id:1,  cat:"Cocktails & Spirits", nameEl:"Aperol Spritz",      nameEn:"Aperol Spritz",      descEl:"Aperol, Prosecco, σόδα, πορτοκάλι",            descEn:"Aperol, Prosecco, soda, orange slice",    price:10, tag:"Bestseller"},
+  {id:2,  cat:"Cocktails & Spirits", nameEl:"Mojito Classico",    nameEn:"Classic Mojito",      descEl:"Λευκό rum, lime, δυόσμος, ζάχαρη, σόδα",      descEn:"White rum, lime, mint, sugar, soda",      price:10, tag:""},
+  {id:3,  cat:"Cocktails & Spirits", nameEl:"Mojito Φράουλα",    nameEn:"Strawberry Mojito",   descEl:"Λευκό rum, φράουλα, lime, δυόσμος",           descEn:"White rum, strawberry, lime, mint",       price:11, tag:""},
+  {id:4,  cat:"Cocktails & Spirits", nameEl:"Sunset Margarita",  nameEn:"Sunset Margarita",    descEl:"Tequila, triple sec, lime, αλάτι χείλους",    descEn:"Tequila, triple sec, lime, salted rim",  price:11, tag:"Σεφ"},
+  {id:5,  cat:"Cocktails & Spirits", nameEl:"Piña Colada",       nameEn:"Piña Colada",         descEl:"Rum, κρέμα καρύδας, ανανάς",                 descEn:"Rum, coconut cream, pineapple",          price:10, tag:""},
+  {id:6,  cat:"Cocktails & Spirits", nameEl:"Sex on the Beach",  nameEn:"Sex on the Beach",    descEl:"Vodka, peach schnapps, OJ, cranberry",        descEn:"Vodka, peach schnapps, OJ, cranberry",   price:10, tag:""},
+  {id:7,  cat:"Cocktails & Spirits", nameEl:"Blue Lagoon",       nameEn:"Blue Lagoon",         descEl:"Vodka, blue curaçao, λεμονάδα",              descEn:"Vodka, blue curaçao, lemonade",          price:10, tag:"Νέο"},
+  {id:8,  cat:"Cocktails & Spirits", nameEl:"Gin & Tonic",       nameEn:"Gin & Tonic",         descEl:"Hendrick's gin, tonic, αγγούρι & λάιμ",      descEn:"Hendrick's gin, tonic, cucumber & lime", price:11, tag:""},
+  {id:9,  cat:"Μπύρες & Κρασιά",    nameEl:"Mythos",            nameEn:"Mythos",              descEl:"Ελληνική lager, 330ml παγωμένη",             descEn:"Greek lager, 330ml chilled",             price:4,  tag:""},
+  {id:10, cat:"Μπύρες & Κρασιά",    nameEl:"Corona Extra",      nameEn:"Corona Extra",        descEl:"Mexican lager, 355ml με lime",               descEn:"Mexican lager, 355ml with lime",         price:5,  tag:"Bestseller"},
+  {id:11, cat:"Μπύρες & Κρασιά",    nameEl:"Heineken",          nameEn:"Heineken",            descEl:"Ολλανδική lager, 330ml",                     descEn:"Dutch lager, 330ml",                     price:5,  tag:""},
+  {id:12, cat:"Μπύρες & Κρασιά",    nameEl:"Rosé Κρύο",        nameEn:"Chilled Rosé",        descEl:"Ελαφρύ ροζέ, ποτήρι 200ml",                 descEn:"Light rosé wine, 200ml glass",           price:7,  tag:""},
+  {id:13, cat:"Μπύρες & Κρασιά",    nameEl:"Λευκό Κρασί",      nameEn:"White Wine",          descEl:"Μοσχοφίλερο, ποτήρι 200ml",                 descEn:"Moschofilero, 200ml glass",              price:7,  tag:""},
+  {id:14, cat:"Μπύρες & Κρασιά",    nameEl:"Sangria",           nameEn:"Sangria",             descEl:"Κόκκινο κρασί, φρούτα, brandy",             descEn:"Red wine, fresh fruit, brandy",          price:8,  tag:"Νέο"},
+  {id:15, cat:"Αναψυκτικά & Χυμοί", nameEl:"Λεμονάδα Σπιτική", nameEn:"Homemade Lemonade",  descEl:"Φρέσκο λεμόνι, δυόσμος, παγάκια",           descEn:"Fresh lemon, mint, crushed ice",         price:5,  tag:""},
+  {id:16, cat:"Αναψυκτικά & Χυμοί", nameEl:"Φρέσκος Χυμός",   nameEn:"Fresh Juice",         descEl:"Πορτοκάλι ή ανανάς",                        descEn:"Orange or pineapple, freshly squeezed",  price:5,  tag:""},
+  {id:17, cat:"Αναψυκτικά & Χυμοί", nameEl:"Smoothie Berries", nameEn:"Berry Smoothie",      descEl:"Mixed berries, μπανάνα, γάλα καρύδας",      descEn:"Mixed berries, banana, coconut milk",    price:6,  tag:"Νέο"},
+  {id:18, cat:"Αναψυκτικά & Χυμοί", nameEl:"Coca-Cola",        nameEn:"Coca-Cola",           descEl:"330ml παγωμένο",                             descEn:"330ml chilled",                          price:3,  tag:""},
+  {id:19, cat:"Αναψυκτικά & Χυμοί", nameEl:"Iced Coffee",      nameEn:"Iced Coffee",         descEl:"Freddo espresso ή cappuccino",               descEn:"Freddo espresso or cappuccino",          price:4,  tag:""},
+];
+
+const ADMIN_PIN = "1710"; // ← Άλλαξε το PIN εδώ
+const STORAGE_KEY = "barraca-menu-v1";
+const CAT_EN = {"Cocktails & Spirits":"Cocktails & Spirits","Μπύρες & Κρασιά":"Beers & Wines","Αναψυκτικά & Χυμοί":"Soft Drinks & Juices"};
+const CAT_EMOJI = {"Cocktails & Spirits":"🍹","Μπύρες & Κρασιά":"🍺","Beers & Wines":"🍺","Αναψυκτικά & Χυμοί":"🥤","Soft Drinks & Juices":"🥤"};
+const CATS_EL = ["Όλα","Cocktails & Spirits","Μπύρες & Κρασιά","Αναψυκτικά & Χυμοί"];
+const CATS_EN_LIST = ["All","Cocktails & Spirits","Beers & Wines","Soft Drinks & Juices"];
+
+let items = [];
+let lang = "el";
+let activeCat = "Όλα";
+
+// ── STORAGE ─────────────────────────────────────────────────────────────────
+function loadItems(){
+  try{ const s=localStorage.getItem(STORAGE_KEY); return s?JSON.parse(s):DEFAULT_ITEMS; }
+  catch{ return DEFAULT_ITEMS; }
+}
+function saveItems(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(items)); }catch{} }
+
+// ── LANG ─────────────────────────────────────────────────────────────────────
+function setLang(l){
+  lang=l;
+  activeCat = l==="el"?"Όλα":"All";
+  document.getElementById('btn-el').classList.toggle('active',l==='el');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.getElementById('search-input').placeholder = l==='el'?"🔍  Αναζήτηση...":"🔍  Search...";
+  renderTabs(); renderMenu();
+}
+
+// ── TABS ─────────────────────────────────────────────────────────────────────
+function renderTabs(){
+  const cats = lang==="el"?CATS_EL:CATS_EN_LIST;
+  const wrap = document.getElementById('tabs-container');
+  wrap.innerHTML = cats.map(c=>`
+    <button class="tab-btn${activeCat===c?' active':''}" onclick="setTab('${c}')">
+      ${CAT_EMOJI[c]?CAT_EMOJI[c]+' ':''}${c}
+    </button>`).join('');
+}
+function setTab(c){ activeCat=c; renderTabs(); renderMenu(); }
+
+// ── TAG HTML ──────────────────────────────────────────────────────────────────
+function tagHtml(tag){
+  if(!tag) return '';
+  const cls = tag==='Bestseller'?'tag-best':(tag==='Νέο'||tag==='New')?'tag-new':'tag-chef';
+  const label = (tag==='Σεφ'&&lang==='en')?'Chef\'s':(tag==='Νέο'&&lang==='en')?'New':tag;
+  return `<span class="tag ${cls}">${label}</span>`;
+}
+
+// ── RENDER MENU ───────────────────────────────────────────────────────────────
+function renderMenu(){
+  const q = document.getElementById('search-input').value.toLowerCase();
+  const allLabel = lang==="el"?"Όλα":"All";
+  const wrap = document.getElementById('items-container');
+
+  const filtered = items.filter(i=>{
+    const catMatch = activeCat===allLabel || i.cat===activeCat ||
+      (lang==="en" && CAT_EN[i.cat]===activeCat);
+    const name = lang==="el"?i.nameEl:i.nameEn;
+    const desc = lang==="el"?i.descEl:i.descEn;
+    return catMatch && (name.toLowerCase().includes(q)||desc.toLowerCase().includes(q));
+  });
+
+  if(!filtered.length){ wrap.innerHTML=`<div class="empty">${lang==="el"?"Δεν βρέθηκαν προϊόντα 🍹":"No items found 🍹"}</div>`; return; }
+
+  // group
+  const groups={};
+  filtered.forEach(i=>{ const k=lang==="en"?(CAT_EN[i.cat]||i.cat):i.cat; if(!groups[k])groups[k]=[]; groups[k].push(i); });
+
+  wrap.innerHTML = Object.entries(groups).map(([catName,catItems])=>`
+    ${activeCat===allLabel?`<div class="cat-header">
+      <span class="emoji">${CAT_EMOJI[catName]||'🍸'}</span>
+      <span class="label">${catName}</span>
+      <div class="divider"></div>
+    </div>`:''}
+    <div style="margin-bottom:18px">
+      ${catItems.map(item=>{
+        const name=lang==="el"?item.nameEl:item.nameEn;
+        const desc=lang==="el"?item.descEl:item.descEn;
+        return `<div class="item-card">
+          <div class="item-info">
+            <div class="item-name-row">
+              <span class="item-name">${name}</span>${tagHtml(item.tag)}
+            </div>
+            <div class="item-desc">${desc}</div>
+          </div>
+          <div class="item-price">${item.price}€</div>
+        </div>`;
+      }).join('')}
+    </div>`).join('');
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────────────────────
+function showAdmin(){
+  document.getElementById('menu-view').style.display='none';
+  document.getElementById('admin-view').style.display='block';
+  renderAdmin();
+}
+function showMenu(){
+  document.getElementById('admin-view').style.display='none';
+  document.getElementById('menu-view').style.display='block';
+}
+
+function renderAdmin(){
+  const cats=["Cocktails & Spirits","Μπύρες & Κρασιά","Αναψυκτικά & Χυμοί"];
+  document.getElementById('admin-list').innerHTML = cats.map(c=>`
+    <div class="admin-cat-label">${CAT_EMOJI[c]} ${c}</div>
+    ${items.filter(i=>i.cat===c).map(item=>`
+      <div class="admin-row">
+        <div class="admin-row-info">
+          <div class="admin-row-name">${item.nameEl}</div>
+          <div class="admin-row-en">${item.nameEn}</div>
+          <div class="admin-row-desc">${item.descEl}</div>
+        </div>
+        <div class="admin-row-price">${item.price}€</div>
+        <button class="btn-edit" onclick="openForm(${item.id})">✏️</button>
+        <button class="btn-del" onclick="deleteItem(${item.id})">🗑️</button>
+      </div>`).join('')}
+  `).join('');
+}
+
+function deleteItem(id){
+  if(!confirm("Διαγραφή προϊόντος;")) return;
+  items=items.filter(i=>i.id!==id);
+  saveItems(); renderAdmin();
+}
+
+// ── FORM ──────────────────────────────────────────────────────────────────────
+function openForm(id){
+  const item = id ? items.find(i=>i.id===id) : null;
+  document.getElementById('form-title').textContent = item?"✏️ Επεξεργασία":"➕ Νέο Προϊόν";
+  document.getElementById('f-id').value    = item?item.id:'';
+  document.getElementById('f-cat').value   = item?item.cat:"Cocktails & Spirits";
+  document.getElementById('f-nameEl').value= item?item.nameEl:'';
+  document.getElementById('f-nameEn').value= item?item.nameEn:'';
+  document.getElementById('f-descEl').value= item?item.descEl:'';
+  document.getElementById('f-descEn').value= item?item.descEn:'';
+  document.getElementById('f-price').value = item?item.price:'';
+  document.getElementById('f-tag').value   = item?item.tag:'';
+  document.getElementById('form-modal').classList.remove('hidden');
+}
+function closeForm(){ document.getElementById('form-modal').classList.add('hidden'); }
+
+function saveForm(){
+  const nameEl=document.getElementById('f-nameEl').value.trim();
+  const price=parseFloat(document.getElementById('f-price').value);
+  if(!nameEl||isNaN(price)){ alert("Συμπλήρωσε τουλάχιστον Όνομα (ΕΛ) και Τιμή."); return; }
+  const id=document.getElementById('f-id').value;
+  const entry={
+    id: id?parseInt(id):Date.now(),
+    cat:  document.getElementById('f-cat').value,
+    nameEl, nameEn: document.getElementById('f-nameEn').value.trim(),
+    descEl: document.getElementById('f-descEl').value.trim(),
+    descEn: document.getElementById('f-descEn').value.trim(),
+    price, tag: document.getElementById('f-tag').value,
+  };
+  if(id){ items=items.map(i=>i.id===parseInt(id)?entry:i); }
+  else   { items.push(entry); }
+  saveItems(); closeForm(); renderAdmin();
+  showToast();
+}
+
+function showToast(){
+  const t=document.getElementById('toast');
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none',2000);
+}
+
+// ── PIN ────────────────────────────────────────────────────────────────────
+function openPinModal(){
+  document.getElementById('pin-input').value='';
+  document.getElementById('pin-err').style.display='none';
+  document.getElementById('pin-modal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('pin-input').focus(),100);
+}
+function closePinModal(){ document.getElementById('pin-modal').classList.add('hidden'); }
+function checkPin(){
+  if(document.getElementById('pin-input').value===ADMIN_PIN){
+    closePinModal(); showAdmin();
+  } else {
+    document.getElementById('pin-err').style.display='block';
+    document.getElementById('pin-input').classList.add('error');
+    setTimeout(()=>document.getElementById('pin-input').classList.remove('error'),600);
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+items = loadItems();
+renderTabs();
+renderMenu();
+</script>
+</body>
+</html>
