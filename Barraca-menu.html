@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Barraca Mare Mare – Sunset & Cocktails</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Georgia',serif;background:#FAFAF7;color:#1A2020;min-height:100vh;}
+:root{
+  --teal:#1A8FA0;--tealDk:#136878;--gold:#E8A820;
+  --bg:#FAFAF7;--card:#fff;--text:#1A2020;--muted:#7A9090;--border:#E2EAE8;
+}
+
+/* HERO */
+.hero{background:linear-gradient(170deg,#0e5c6b 0%,#1A8FA0 60%,#1aaa8a 100%);padding:32px 20px 28px;text-align:center;position:relative;}
+.hero h1{margin:10px 0 0;font-size:26px;font-weight:700;color:#fff;letter-spacing:-0.3px;}
+.hero .subtitle{font-size:12px;letter-spacing:0.2em;color:var(--gold);margin-top:5px;text-transform:uppercase;}
+.lang-toggle{position:absolute;top:16px;right:16px;display:flex;gap:4px;}
+.lang-btn{padding:5px 12px;border-radius:50px;border:1.5px solid rgba(255,255,255,0.3);cursor:pointer;font-size:12px;font-family:Georgia,serif;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.85);transition:all .15s;}
+.lang-btn.active{background:#fff;color:var(--teal);border-color:#fff;font-weight:700;}
+.staff-btn{position:absolute;top:16px;left:16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:rgba(255,255,255,0.3);padding:4px 10px;font-size:11px;cursor:pointer;font-family:sans-serif;}
+
+/* SEARCH & TABS */
+.search-wrap{padding:14px 16px 0;max-width:680px;margin:0 auto;}
+.search-wrap input{width:100%;padding:11px 16px;border-radius:12px;border:1.5px solid var(--border);background:#fff;color:var(--text);font-size:14px;outline:none;font-family:Georgia,serif;}
+.tabs-wrap{padding:12px 16px 4px;max-width:680px;margin:0 auto;}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab-btn{flex-shrink:0;padding:7px 15px;border-radius:50px;border:1.5px solid var(--border);cursor:pointer;font-size:13px;font-family:Georgia,serif;background:#fff;color:var(--muted);transition:all .15s;}
+.tab-btn.active{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:700;}
+
+/* SUBCATEGORY TABS */
+.subcats-wrap{padding:6px 16px 4px;max-width:680px;margin:0 auto;}
+.subcats{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.subcats::-webkit-scrollbar{display:none;}
+.subcat-btn{flex-shrink:0;padding:5px 13px;border-radius:50px;border:1.5px solid var(--border);cursor:pointer;font-size:12px;font-family:Georgia,serif;background:#fff;color:var(--muted);transition:all .15s;}
+.subcat-btn.active{background:var(--gold);color:#1A2020;border-color:var(--gold);font-weight:700;}
+
+/* WINE LEVEL 3 */
+.winecats-wrap{padding:4px 16px 4px;max-width:680px;margin:0 auto;}
+.winecats{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.winecat-btn{flex-shrink:0;padding:4px 12px;border-radius:50px;border:1.5px solid #D4B4E0;cursor:pointer;font-size:11px;font-family:Georgia,serif;background:#fff;color:#6B3FA0;transition:all .15s;}
+.winecat-btn.active{background:#6B3FA0;color:#fff;border-color:#6B3FA0;font-weight:700;}
+
+/* ITEMS */
+.items-wrap{padding:10px 16px 48px;max-width:680px;margin:0 auto;}
+.item-card{background:var(--card);border-radius:14px;padding:14px 16px;border:1px solid var(--border);display:flex;align-items:center;gap:14px;box-shadow:0 1px 4px rgba(26,143,160,.06);margin-bottom:10px;}
+.item-info{flex:1;min-width:0;}
+.item-name-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.item-name{font-weight:700;font-size:15px;color:var(--text);}
+.item-desc{font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.5;}
+.item-price{min-width:48px;text-align:right;font-weight:800;font-size:18px;color:var(--gold);font-family:sans-serif;}
+.tag{font-size:10px;font-family:sans-serif;font-weight:700;padding:2px 8px;border-radius:50px;letter-spacing:0.04em;}
+.tag-best{background:#FFF3C4;color:#7B5200;border:1px solid #E8C840;}
+.tag-new{background:#E6F6FF;color:#0D5C8A;border:1px solid #63B3ED;}
+.tag-chef{background:#F0FFF4;color:#1A5C30;border:1px solid #68D391;}
+.empty{text-align:center;color:var(--muted);padding:48px;font-size:15px;}
+
+/* FOOTER */
+.footer{text-align:center;padding:20px 16px 32px;border-top:1px solid var(--border);color:var(--muted);font-size:12px;}
+.footer .f-name{font-weight:700;color:var(--teal);font-size:13px;margin-top:4px;}
+.footer .f-sub{margin-top:2px;letter-spacing:0.1em;font-size:11px;text-transform:uppercase;color:var(--gold);}
+
+/* PIN MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;align-items:center;justify-content:center;}
+.pin-box{background:#fff;border-radius:16px;padding:28px 24px;width:280px;box-shadow:0 8px 32px rgba(0,0,0,.2);text-align:center;position:relative;z-index:1;}
+.pin-box h3{font-weight:700;font-size:16px;margin-bottom:16px;color:var(--tealDk);}
+.pin-box input{width:100%;padding:11px;text-align:center;border-radius:8px;font-size:20px;border:2px solid var(--border);outline:none;letter-spacing:0.3em;margin-bottom:8px;}
+.pin-box input.error{border-color:#E53E3E;}
+.pin-error{color:#E53E3E;font-size:12px;margin-bottom:8px;}
+.pin-submit{width:100%;padding:11px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;font-family:Georgia,serif;cursor:pointer;}
+
+/* ADMIN */
+.admin-wrap{display:none;min-height:100vh;background:#F5F7FA;}
+.admin-header{background:var(--tealDk);color:#fff;padding:18px 20px;}
+.admin-header-inner{max-width:720px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+.admin-header .sub{font-size:11px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;}
+.admin-header h1{margin:0;font-size:20px;font-weight:700;}
+.admin-btns{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-add{background:var(--gold);border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;font-weight:700;color:#1A2020;font-family:Georgia,serif;}
+.btn-add-cat{background:#2D6B2A;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;font-weight:700;color:#fff;font-family:Georgia,serif;}
+.btn-back{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;color:#fff;font-family:Georgia,serif;}
+.admin-content{max-width:720px;margin:0 auto;padding:16px;}
+.admin-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px;}
+.admin-tab{flex-shrink:0;padding:7px 15px;border-radius:50px;border:1.5px solid var(--border);cursor:pointer;font-size:13px;font-family:Georgia,serif;background:#fff;color:var(--muted);}
+.admin-tab.active{background:var(--tealDk);color:#fff;border-color:var(--tealDk);font-weight:700;}
+.subcat-section{margin-bottom:20px;}
+.subcat-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:rgba(26,143,160,0.08);border-radius:10px;margin-bottom:8px;}
+.subcat-header span{font-weight:700;font-size:14px;color:var(--tealDk);}
+.subcat-actions{display:flex;gap:6px;}
+.admin-row{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.admin-row-info{flex:1;}
+.admin-row-name{font-weight:700;font-size:14px;}
+.admin-row-en{font-size:12px;color:var(--muted);}
+.admin-row-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.admin-row-price{font-weight:800;font-size:17px;color:var(--gold);font-family:sans-serif;min-width:44px;text-align:right;}
+.btn-edit{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;font-size:12px;color:var(--teal);}
+.btn-del{padding:5px 10px;border-radius:8px;border:1px solid #FCA5A5;background:#FFF5F5;cursor:pointer;font-size:12px;color:#C53030;}
+.btn-small-add{padding:4px 10px;border-radius:8px;border:none;background:var(--gold);cursor:pointer;font-size:11px;color:#1A2020;font-weight:700;}
+.btn-small-del{padding:4px 10px;border-radius:8px;border:none;background:#FFF5F5;cursor:pointer;font-size:11px;color:#C53030;border:1px solid #FCA5A5;}
+
+/* FORM MODAL */
+.form-sheet{position:fixed;inset:0;z-index:200;display:flex;align-items:flex-end;justify-content:center;}
+.form-sheet .bg{position:absolute;inset:0;background:rgba(0,0,0,.5);}
+.form-inner{position:relative;background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:680px;padding:24px 20px 36px;max-height:88vh;overflow-y:auto;}
+.form-inner h2{margin:0 0 18px;font-size:18px;color:var(--tealDk);}
+.form-label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;font-family:sans-serif;letter-spacing:0.08em;text-transform:uppercase;}
+.form-field{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);font-size:14px;font-family:Georgia,serif;outline:none;margin-bottom:12px;}
+.form-actions{display:flex;gap:10px;margin-top:20px;}
+.btn-save{flex:1;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;font-family:Georgia,serif;cursor:pointer;}
+.btn-cancel{padding:13px 20px;background:#f0f0f0;border:none;border-radius:10px;font-size:15px;cursor:pointer;font-family:Georgia,serif;}
+
+/* TOAST */
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--teal);color:#fff;padding:10px 24px;border-radius:50px;font-size:14px;font-weight:700;z-index:9999;box-shadow:0 3px 12px rgba(0,0,0,.2);display:none;white-space:nowrap;}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+<div class="toast" id="toast">✅ Αποθηκεύτηκε!</div>
+
+<!-- ═══ CUSTOMER MENU ═══ -->
+<div id="menu-view">
+  <div class="overlay hidden" id="pin-modal">
+    <div class="pin-box">
+      <div style="font-size:20px;margin-bottom:4px">🔒</div>
+      <h3>Κωδικός Staff</h3>
+      <input type="password" id="pin-input" placeholder="••••" maxlength="10"
+        oninput="document.getElementById('pin-err').style.display='none'"
+        onkeydown="if(event.key==='Enter')checkPin()"/>
+      <div class="pin-error" id="pin-err" style="display:none">Λάθος κωδικός</div>
+      <button class="pin-submit" onclick="checkPin()">Είσοδος</button>
+    </div>
+    <div style="position:absolute;inset:0;z-index:0" onclick="closePinModal()"></div>
+  </div>
+
+  <div class="hero">
+    <svg width="90" height="90" viewBox="0 0 200 200" fill="none">
+      <ellipse cx="85" cy="118" rx="32" ry="32" fill="#F5A623"/>
+      <path d="M30 130 Q60 120 90 130 Q120 140 150 130 Q165 125 175 130" stroke="#7EC8E3" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <path d="M25 142 Q55 132 85 142 Q115 152 145 142 Q162 136 178 142" stroke="#A8D8EA" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="128" cy="128" rx="18" ry="12" fill="#2D6B2A"/>
+      <path d="M100 160 Q98 130 95 100 Q93 80 92 60" stroke="#3D5A1A" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <path d="M115 162 Q118 135 122 108 Q125 88 130 65" stroke="#3D5A1A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M92 60 Q75 45 60 55" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M92 60 Q80 38 90 28" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M92 60 Q105 42 118 48" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M130 65 Q112 50 100 58" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M130 65 Q128 44 138 34" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+      <path d="M130 65 Q145 48 158 55" stroke="#2D6B2A" stroke-width="5" stroke-linecap="round" fill="none"/>
+    </svg>
+    <h1>Barraca Mare Mare</h1>
+    <div class="subtitle">Sunset &amp; Cocktails</div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-el" onclick="setLang('el')">ΕΛ</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="staff-btn" onclick="openPinModal()">Staff</button>
+  </div>
+
+  <div class="search-wrap">
+    <input type="text" id="search-input" placeholder="🔍  Αναζήτηση..." oninput="renderMenu()"/>
+  </div>
+  <div class="tabs-wrap"><div class="tabs" id="tabs-container"></div></div>
+  <div class="subcats-wrap" id="subcats-wrap" style="display:none"><div class="subcats" id="subcats-container"></div></div>
+  <div class="winecats-wrap" id="winecats-wrap" style="display:none"><div class="winecats" id="winecats-container"></div></div>
+  <div class="items-wrap" id="items-container"></div>
+
+  <div class="footer">
+    <div>🌅</div>
+    <div class="f-name">Barraca Mare Mare</div>
+    <div class="f-sub">Sunset &amp; Cocktails</div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN ═══ -->
+<div class="admin-wrap" id="admin-view">
+  <div class="admin-header">
+    <div class="admin-header-inner">
+      <div>
+        <div class="sub">Διαχείριση</div>
+        <h1>Barraca Mare Mare</h1>
+      </div>
+      <div class="admin-btns">
+        <button class="btn-add" onclick="openItemForm(null)">+ Προϊόν</button>
+        <button class="btn-add-cat" onclick="openCatForm()">+ Κατηγορία</button>
+        <button onclick="exportData()" style="background:#6B3FA0;border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;font-weight:700;color:#fff;font-family:Georgia,serif;">⬇️ Export</button>
+        <button class="btn-back" onclick="showMenu()">← Μενού</button>
+      </div>
+    </div>
+  </div>
+  <div class="admin-content">
+    <div class="admin-tabs" id="admin-tabs"></div>
+    <div id="admin-list"></div>
+  </div>
+</div>
+
+<!-- ITEM FORM -->
+<div class="form-sheet hidden" id="item-form-modal">
+  <div class="bg" onclick="closeItemForm()"></div>
+  <div class="form-inner">
+    <h2 id="item-form-title">➕ Νέο Προϊόν</h2>
+    <input type="hidden" id="f-id"/>
+    <label class="form-label">Κατηγορία</label>
+    <select class="form-field" id="f-cat" onchange="updateSubcatOptions()"></select>
+    <label class="form-label">Υποκατηγορία</label>
+    <select class="form-field" id="f-subcat"></select>
+    <label class="form-label">Υπο-υποκατηγορία (προαιρετικό)</label>
+    <select class="form-field" id="f-subsubcat"></select>
+    <label class="form-label">Όνομα (ΕΛ)</label>
+    <input class="form-field" type="text" id="f-nameEl"/>
+    <label class="form-label">Όνομα (EN)</label>
+    <input class="form-field" type="text" id="f-nameEn"/>
+    <label class="form-label">Περιγραφή (ΕΛ)</label>
+    <input class="form-field" type="text" id="f-descEl"/>
+    <label class="form-label">Περιγραφή (EN)</label>
+    <input class="form-field" type="text" id="f-descEn"/>
+    <label class="form-label">Τιμή (€)</label>
+    <input class="form-field" type="number" id="f-price" min="0" step="0.5"/>
+    <label class="form-label">Ετικέτα</label>
+    <select class="form-field" id="f-tag">
+      <option value="">— Χωρίς —</option>
+      <option value="Bestseller">Bestseller</option>
+      <option value="Νέο">Νέο / New</option>
+      <option value="Σεφ">Σεφ / Chef's</option>
+    </select>
+    <div class="form-actions">
+      <button class="btn-save" onclick="saveItemForm()">Αποθήκευση</button>
+      <button class="btn-cancel" onclick="closeItemForm()">Άκυρο</button>
+    </div>
+  </div>
+</div>
+
+<!-- CAT FORM -->
+<div class="form-sheet hidden" id="cat-form-modal">
+  <div class="bg" onclick="closeCatForm()"></div>
+  <div class="form-inner">
+    <h2 id="cat-form-title">➕ Νέα Κατηγορία / Υποκατηγορία</h2>
+    <label class="form-label">Τύπος</label>
+    <select class="form-field" id="cf-type" onchange="updateCatFormFields()">
+      <option value="cat">Κατηγορία</option>
+      <option value="subcat">Υποκατηγορία</option>
+      <option value="subsubcat">Υπο-υποκατηγορία</option>
+    </select>
+    <div id="cf-cat-fields">
+      <label class="form-label">Όνομα Κατηγορίας (ΕΛ)</label>
+      <input class="form-field" type="text" id="cf-nameEl" placeholder="π.χ. Σνακ"/>
+      <label class="form-label">Όνομα Κατηγορίας (EN)</label>
+      <input class="form-field" type="text" id="cf-nameEn" placeholder="e.g. Snacks"/>
+      <label class="form-label">Emoji</label>
+      <input class="form-field" type="text" id="cf-emoji" placeholder="π.χ. 🍕" maxlength="4"/>
+    </div>
+    <div id="cf-subcat-fields" style="display:none">
+      <label class="form-label">Κατηγορία</label>
+      <select class="form-field" id="cf-parent-cat" onchange="updateCfSubcatOptions()"></select>
+      <label class="form-label" id="cf-sub-label">Όνομα Υποκατηγορίας (ΕΛ)</label>
+      <input class="form-field" type="text" id="cf-sub-nameEl"/>
+      <label class="form-label">Όνομα Υποκατηγορίας (EN)</label>
+      <input class="form-field" type="text" id="cf-sub-nameEn"/>
+      <div id="cf-subsubcat-extra" style="display:none">
+        <label class="form-label">Υποκατηγορία</label>
+        <select class="form-field" id="cf-parent-subcat"></select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn-save" onclick="saveCatForm()">Αποθήκευση</button>
+      <button class="btn-cancel" onclick="closeCatForm()">Άκυρο</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ CONFIG ══════════════════════════════════════════════════════
+const ADMIN_PIN = "1710";
+const STORAGE_KEY = "barraca-v2";
+
+// ══ DEFAULT DATA ════════════════════════════════════════════════
+const DEFAULT_CATS = [
+  { id:"cocktails", emoji:"🍹", nameEl:"Cocktails", nameEn:"Cocktails",
+    subcats:[
+      { id:"special", nameEl:"⭐ Special Offer", nameEn:"⭐ Special Offer", subsubs:[] },
+      { id:"classic", nameEl:"Classic", nameEn:"Classic", subsubs:[] },
+      { id:"signatures", nameEl:"Signatures", nameEn:"Signatures", subsubs:[] }
+    ]
+  },
+  { id:"spirits", emoji:"🥃", nameEl:"Spirits", nameEn:"Spirits",
+    subcats:[
+      { id:"rumi", nameEl:"Ρούμι", nameEn:"Rum", subsubs:[] },
+      { id:"tekila", nameEl:"Τεκίλα", nameEn:"Tequila", subsubs:[] },
+      { id:"vodka", nameEl:"Βότκα", nameEn:"Vodka", subsubs:[] },
+      { id:"whisky", nameEl:"Ουίσκι", nameEn:"Whisky", subsubs:[] },
+      { id:"gin", nameEl:"Τζιν", nameEn:"Gin", subsubs:[] },
+      { id:"liker", nameEl:"Λικέρ / Απεριτίφ", nameEn:"Liqueur / Aperitif", subsubs:[] }
+    ]
+  },
+  { id:"bires", emoji:"🍺", nameEl:"Μπύρες", nameEn:"Beers", subcats:[] },
+  { id:"krasia", emoji:"🍷", nameEl:"Κρασιά", nameEn:"Wines",
+    subcats:[
+      { id:"potiri", nameEl:"Ποτήρι", nameEn:"Glass",
+        subsubs:[
+          { id:"potiri-lefko", nameEl:"Λευκό", nameEn:"White" },
+          { id:"potiri-kokkino", nameEl:"Κόκκινο", nameEn:"Red" },
+          { id:"potiri-roze", nameEl:"Ροζέ", nameEn:"Rosé" }
+        ]
+      },
+      { id:"boukali", nameEl:"Μπουκάλι", nameEn:"Bottle",
+        subsubs:[
+          { id:"boukali-lefko", nameEl:"Λευκό", nameEn:"White" },
+          { id:"boukali-kokkino", nameEl:"Κόκκινο", nameEn:"Red" },
+          { id:"boukali-roze", nameEl:"Ροζέ", nameEn:"Rosé" }
+        ]
+      }
+    ]
+  },
+  { id:"kafes", emoji:"☕", nameEl:"Καφέδες & Ροφήματα", nameEn:"Coffees & Beverages",
+    subcats:[
+      { id:"kaf-kafes", nameEl:"Καφές", nameEn:"Coffee", subsubs:[] },
+      { id:"kaf-milk", nameEl:"Milkshakes", nameEn:"Milkshakes", subsubs:[] },
+      { id:"kaf-xymoi", nameEl:"Χυμοί", nameEn:"Juices", subsubs:[] },
+      { id:"kaf-tsai", nameEl:"Τσάι", nameEn:"Tea", subsubs:[] },
+      { id:"kaf-anaps", nameEl:"Αναψυκτικά", nameEn:"Soft Drinks", subsubs:[] },
+      { id:"kaf-energy", nameEl:"Ενεργειακά / Ανθρακούχα", nameEn:"Energy / Sparkling", subsubs:[] }
+    ]
+  },
+  { id:"granites", emoji:"🧊", nameEl:"Γρανίτες", nameEn:"Granitas", subcats:[] },
+  { id:"snacks", emoji:"🥪", nameEl:"Snacks", nameEn:"Snacks", subcats:[] },
+  { id:"nonalc", emoji:"🍃", nameEl:"Non-Alcoholic Cocktails & Spirits", nameEn:"Non-Alcoholic Cocktails & Spirits", subcats:[] }
+];
+
+const DEFAULT_ITEMS = [
+  // COCKTAILS - Special Offer
+  {id:101, cat:"cocktails", subcat:"special", subsubcat:"", nameEl:"Margarita", nameEn:"Margarita", descEl:"Olmeca Altos 100% φυσική Αγαύη (μη επεξεργασμένη τεκίλα), orange liqueur, lime, salt", descEn:"Olmeca Altos 100% natural Agave (unprocessed tequila), orange liqueur, lime, salt", price:10, tag:"Σεφ"},
+  {id:102, cat:"cocktails", subcat:"special", subsubcat:"", nameEl:"Paloma", nameEn:"Paloma", descEl:"Olmeca Altos 100% φυσική Αγαύη (μη επεξεργασμένη τεκίλα), pink grapefruit soda, lime, salt", descEn:"Olmeca Altos 100% natural Agave (unprocessed tequila), pink grapefruit soda, lime, salt", price:10, tag:"Σεφ"},
+  {id:103, cat:"cocktails", subcat:"special", subsubcat:"", nameEl:"Old Fashioned", nameEn:"Old Fashioned", descEl:"Jameson Black Barrel whiskey, sugar, angostura bitters", descEn:"Jameson Black Barrel whiskey, sugar, angostura bitters", price:10, tag:"Σεφ"},
+  {id:118, cat:"cocktails", subcat:"special", subsubcat:"", nameEl:"Passinha", nameEn:"Passinha", descEl:"Olmeca Altos 100% φυσική Αγαύη (μη επεξεργασμένη τεκίλα), passion fruit, orange liqueur", descEn:"Olmeca Altos 100% natural Agave (unprocessed tequila), passion fruit, orange liqueur", price:10, tag:"Σεφ"},
+  // COCKTAILS - Classic
+  {id:1, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Mojito", nameEn:"Mojito", descEl:"Havana Club 3 Años χρυσό rum, lime, δυόσμος, ζάχαρη, σόδα", descEn:"Havana Club 3 Años gold rum, lime, mint, sugar, soda", price:8, tag:"Bestseller"},
+  {id:2, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Aperol Spritz", nameEn:"Aperol Spritz", descEl:"Aperol, Moscato D'Asti, σόδα, πορτοκάλι", descEn:"Aperol, Moscato D'Asti, soda, orange", price:8, tag:"Bestseller"},
+  {id:3, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Piña Colada", nameEn:"Piña Colada", descEl:"Havana Club 3 Años χρυσό rum, κρέμα καρύδας, ανανάς", descEn:"Havana Club 3 Años gold rum, coconut cream, pineapple", price:10, tag:""},
+  {id:4, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Sex on the Beach", nameEn:"Sex on the Beach", descEl:"Absolut Vodka, peach schnapps, OJ, cranberry", descEn:"Absolut Vodka, peach schnapps, OJ, cranberry", price:10, tag:""},
+  {id:104, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Lillet Spritz", nameEn:"Lillet Spritz", descEl:"Lillet Rosé (rose wine-based aperitif), grapefruit soda", descEn:"Lillet Rosé (rose wine-based aperitif), grapefruit soda", price:7, tag:"Νέο"},
+  {id:105, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Cuba Libre", nameEn:"Cuba Libre", descEl:"Havana Club Especial Rum, cola", descEn:"Havana Club Especial Rum, cola", price:8, tag:""},
+  {id:106, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Caipirinha", nameEn:"Caipirinha", descEl:"Janeiro Cachaça, ζάχαρη, lime", descEn:"Janeiro Cachaça, sugar, lime", price:8, tag:""},
+  {id:107, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Daiquiri", nameEn:"Daiquiri", descEl:"Havana Club 3 Años gold, ζάχαρη, lime (+1€ φράουλα, ανανά, passion fruit ή cranberry)", descEn:"Havana Club 3 Años gold, sugar, lime (+1€ strawberry, pineapple, passion fruit or cranberry)", price:8, tag:""},
+  {id:108, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Margarita", nameEn:"Margarita", descEl:"Olmeca Silver tequila, orange liqueur, lime, salt", descEn:"Olmeca Silver tequila, orange liqueur, lime, salt", price:9, tag:""},
+  {id:109, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Mai Tai", nameEn:"Mai Tai", descEl:"Black, white & gold rum, almond syrup, lime, orange liqueur", descEn:"Black, white & gold rum, almond syrup, lime, orange liqueur", price:9, tag:""},
+  {id:110, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Zombie", nameEn:"Zombie", descEl:"Black, white & gold rum, ανανάς, passion fruit, spices syrup", descEn:"Black, white & gold rum, pineapple, passion fruit, spices syrup", price:12, tag:"Σεφ"},
+  {id:111, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Pornstar Martini", nameEn:"Pornstar Martini", descEl:"Absolut Vodka, passion fruit, vanilla syrup", descEn:"Absolut Vodka, passion fruit, vanilla syrup", price:9, tag:""},
+  {id:112, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Paloma", nameEn:"Paloma", descEl:"Olmeca Silver, pink grapefruit soda, lime, salt", descEn:"Olmeca Silver, pink grapefruit soda, lime, salt", price:9, tag:""},
+  {id:113, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Old Fashioned", nameEn:"Old Fashioned", descEl:"Ballantine's whiskey, sugar, angostura bitters", descEn:"Ballantine's whiskey, sugar, angostura bitters", price:8, tag:""},
+  {id:114, cat:"cocktails", subcat:"classic", subsubcat:"", nameEl:"Negroni", nameEn:"Negroni", descEl:"Beefeater gin, κόκκινο γλυκό βερμούτ, πικρό βερμούτ", descEn:"Beefeater gin, sweet red vermouth, dry vermouth", price:9, tag:""},
+  // COCKTAILS - Signatures
+  {id:115, cat:"cocktails", subcat:"signatures", subsubcat:"", nameEl:"Strawberry Cobbler", nameEn:"Strawberry Cobbler", descEl:"Κόκκινη sangria, φράουλα", descEn:"Red sangria, strawberry", price:7, tag:"Σεφ"},
+  {id:116, cat:"cocktails", subcat:"signatures", subsubcat:"", nameEl:"Passinha", nameEn:"Passinha", descEl:"Olmeca Reposado, passion fruit, orange liqueur", descEn:"Olmeca Reposado, passion fruit, orange liqueur", price:9, tag:"Σεφ"},
+  {id:117, cat:"cocktails", subcat:"signatures", subsubcat:"", nameEl:"Aegean Cucumber", nameEn:"Aegean Cucumber", descEl:"Beefeater gin, cucumber syrup, orange liqueur", descEn:"Beefeater gin, cucumber syrup, orange liqueur", price:9, tag:"Σεφ"},
+  {id:245, cat:"cocktails", subcat:"signatures", subsubcat:"", nameEl:"Mon Amour", nameEn:"Mon Amour", descEl:"Μαύρο, λευκό και χρυσό ρούμι, καραμέλα, passion fruit, λικέρ πορτοκάλι", descEn:"Black, white and gold rum, caramel, passion fruit, orange liqueur", price:9, tag:"Σεφ"},
+  // SPIRITS - ΡΟΥΜΙ
+  {id:11, cat:"spirits", subcat:"rumi", subsubcat:"", nameEl:"Havana Club 3 Años Gold", nameEn:"Havana Club 3 Años Gold", descEl:"Gold rum, 50ml", descEn:"Gold rum, 50ml", price:7, tag:""},
+  {id:201, cat:"spirits", subcat:"rumi", subsubcat:"", nameEl:"Havana Club Especial", nameEn:"Havana Club Especial", descEl:"Dark rum, 50ml", descEn:"Dark rum, 50ml", price:8, tag:""},
+  {id:202, cat:"spirits", subcat:"rumi", subsubcat:"", nameEl:"Havana Club Spiced", nameEn:"Havana Club Spiced", descEl:"Spiced rum, 50ml", descEn:"Spiced rum, 50ml", price:9, tag:""},
+  {id:203, cat:"spirits", subcat:"rumi", subsubcat:"", nameEl:"Sailor Jerry", nameEn:"Sailor Jerry", descEl:"Spiced rum, 50ml", descEn:"Spiced rum, 50ml", price:8, tag:""},
+  {id:204, cat:"spirits", subcat:"rumi", subsubcat:"", nameEl:"Bumbu Original", nameEn:"Bumbu Original", descEl:"Craft rum, 50ml", descEn:"Craft rum, 50ml", price:11, tag:""},
+  {id:205, cat:"spirits", subcat:"rumi", subsubcat:"", nameEl:"Diplomatico Mantuano", nameEn:"Diplomatico Mantuano", descEl:"Venezuelan rum, 50ml", descEn:"Venezuelan rum, 50ml", price:10, tag:""},
+  {id:206, cat:"spirits", subcat:"rumi", subsubcat:"", nameEl:"Diplomatico Exclusiva Reserva", nameEn:"Diplomatico Exclusiva Reserva", descEl:"Premium Venezuelan rum, 50ml", descEn:"Premium Venezuelan rum, 50ml", price:11, tag:""},
+  // SPIRITS - ΤΕΚΙΛΑ
+  {id:207, cat:"spirits", subcat:"tekila", subsubcat:"", nameEl:"Olmeca Silver Blanco", nameEn:"Olmeca Silver Blanco", descEl:"Tequila blanco, 50ml", descEn:"Blanco tequila, 50ml", price:7, tag:""},
+  {id:208, cat:"spirits", subcat:"tekila", subsubcat:"", nameEl:"Olmeca Reposado", nameEn:"Olmeca Reposado", descEl:"Tequila reposado, 50ml", descEn:"Reposado tequila, 50ml", price:7, tag:""},
+  {id:209, cat:"spirits", subcat:"tekila", subsubcat:"", nameEl:"Olmeca Altos Plata Blanco 100% Agave", nameEn:"Olmeca Altos Plata Blanco 100% Agave", descEl:"Μη επεξεργασμένη τεκίλα, με 100% φυσική Αγαύη φυτό, 50ml", descEn:"Unprocessed tequila, with 100% natural Agave plant, 50ml", price:10, tag:""},
+  {id:210, cat:"spirits", subcat:"tekila", subsubcat:"", nameEl:"Olmeca Altos Reposado 100% Agave", nameEn:"Olmeca Altos Reposado 100% Agave", descEl:"Μη επεξεργασμένη τεκίλα, με 100% φυσική Αγαύη φυτό, 50ml", descEn:"Unprocessed tequila, with 100% natural Agave plant, 50ml", price:11, tag:""},
+  {id:211, cat:"spirits", subcat:"tekila", subsubcat:"", nameEl:"Herradura Reposado", nameEn:"Herradura Reposado", descEl:"100% Agave tequila reposado, 50ml", descEn:"100% Agave reposado tequila, 50ml", price:11, tag:""},
+  {id:212, cat:"spirits", subcat:"tekila", subsubcat:"", nameEl:"Don Julio Blanco", nameEn:"Don Julio Blanco", descEl:"Premium tequila blanco, 50ml", descEn:"Premium blanco tequila, 50ml", price:12, tag:""},
+  {id:213, cat:"spirits", subcat:"tekila", subsubcat:"", nameEl:"Don Julio Reposado", nameEn:"Don Julio Reposado", descEl:"Premium tequila reposado, 50ml", descEn:"Premium reposado tequila, 50ml", price:15, tag:""},
+  // SPIRITS - ΒΟΤΚΑ
+  {id:14, cat:"spirits", subcat:"vodka", subsubcat:"", nameEl:"Absolut", nameEn:"Absolut", descEl:"Swedish vodka, 50ml", descEn:"Swedish vodka, 50ml", price:7, tag:""},
+  {id:15, cat:"spirits", subcat:"vodka", subsubcat:"", nameEl:"Grey Goose", nameEn:"Grey Goose", descEl:"French premium vodka, 50ml", descEn:"French premium vodka, 50ml", price:12, tag:""},
+  {id:214, cat:"spirits", subcat:"vodka", subsubcat:"", nameEl:"Absolut Elyx", nameEn:"Absolut Elyx", descEl:"Single estate vodka, 50ml", descEn:"Single estate vodka, 50ml", price:12, tag:""},
+  {id:215, cat:"spirits", subcat:"vodka", subsubcat:"", nameEl:"Cîroc", nameEn:"Cîroc", descEl:"French grape vodka, 50ml", descEn:"French grape vodka, 50ml", price:11, tag:""},
+  {id:216, cat:"spirits", subcat:"vodka", subsubcat:"", nameEl:"Beluga", nameEn:"Beluga", descEl:"Russian premium vodka, 50ml", descEn:"Russian premium vodka, 50ml", price:13, tag:""},
+  // SPIRITS - ΟΥΙΣΚΙ
+  {id:16, cat:"spirits", subcat:"whisky", subsubcat:"", nameEl:"Jack Daniel's", nameEn:"Jack Daniel's", descEl:"Tennessee whiskey, 50ml", descEn:"Tennessee whiskey, 50ml", price:9, tag:""},
+  {id:217, cat:"spirits", subcat:"whisky", subsubcat:"", nameEl:"Johnnie Walker Red", nameEn:"Johnnie Walker Red", descEl:"Scotch whisky, 50ml", descEn:"Scotch whisky, 50ml", price:7, tag:""},
+  {id:218, cat:"spirits", subcat:"whisky", subsubcat:"", nameEl:"Ballantine's", nameEn:"Ballantine's", descEl:"Scotch whisky, 50ml", descEn:"Scotch whisky, 50ml", price:7, tag:""},
+  {id:219, cat:"spirits", subcat:"whisky", subsubcat:"", nameEl:"Haig", nameEn:"Haig", descEl:"Scotch whisky, 50ml", descEn:"Scotch whisky, 50ml", price:7, tag:""},
+  {id:220, cat:"spirits", subcat:"whisky", subsubcat:"", nameEl:"Dewar's", nameEn:"Dewar's", descEl:"Scotch whisky, 50ml", descEn:"Scotch whisky, 50ml", price:7, tag:""},
+  {id:221, cat:"spirits", subcat:"whisky", subsubcat:"", nameEl:"Jameson Irish", nameEn:"Jameson Irish", descEl:"Irish whiskey, 50ml", descEn:"Irish whiskey, 50ml", price:8, tag:""},
+  {id:17, cat:"spirits", subcat:"whisky", subsubcat:"", nameEl:"Jameson Black Barrel", nameEn:"Jameson Black Barrel", descEl:"Irish whiskey, 50ml — Προτείνουμε!", descEn:"Irish whiskey, 50ml — We recommend!", price:10, tag:"Σεφ"},
+  {id:222, cat:"spirits", subcat:"whisky", subsubcat:"", nameEl:"Four Roses Bourbon", nameEn:"Four Roses Bourbon", descEl:"Kentucky bourbon, 50ml", descEn:"Kentucky bourbon, 50ml", price:8, tag:""},
+  {id:223, cat:"spirits", subcat:"whisky", subsubcat:"", nameEl:"The Glenlivet", nameEn:"The Glenlivet", descEl:"Single malt Scotch whisky, 50ml", descEn:"Single malt Scotch whisky, 50ml", price:10, tag:""},
+  {id:224, cat:"spirits", subcat:"whisky", subsubcat:"", nameEl:"Cardhu 12", nameEn:"Cardhu 12", descEl:"Single malt Scotch whisky 12 years, 50ml", descEn:"Single malt Scotch whisky 12 years, 50ml", price:11, tag:""},
+  // SPIRITS - ΤΖΙΝ
+  {id:18, cat:"spirits", subcat:"gin", subsubcat:"", nameEl:"Beefeater", nameEn:"Beefeater", descEl:"London dry gin, 50ml", descEn:"London dry gin, 50ml", price:7, tag:"Bestseller"},
+  {id:225, cat:"spirits", subcat:"gin", subsubcat:"", nameEl:"Beefeater 24", nameEn:"Beefeater 24", descEl:"Premium London dry gin, 50ml", descEn:"Premium London dry gin, 50ml", price:9, tag:""},
+  {id:226, cat:"spirits", subcat:"gin", subsubcat:"", nameEl:"Tanqueray", nameEn:"Tanqueray", descEl:"London dry gin, 50ml", descEn:"London dry gin, 50ml", price:8, tag:""},
+  {id:227, cat:"spirits", subcat:"gin", subsubcat:"", nameEl:"Broker's", nameEn:"Broker's", descEl:"London dry gin, 50ml", descEn:"London dry gin, 50ml", price:8, tag:""},
+  {id:228, cat:"spirits", subcat:"gin", subsubcat:"", nameEl:"Malfy Originale", nameEn:"Malfy Originale", descEl:"Italian gin, 50ml — Προτείνουμε!", descEn:"Italian gin, 50ml — We recommend!", price:10, tag:"Σεφ"},
+  {id:229, cat:"spirits", subcat:"gin", subsubcat:"", nameEl:"Malfy con Limone", nameEn:"Malfy con Limone", descEl:"Italian lemon gin, 50ml — Προτείνουμε!", descEn:"Italian lemon gin, 50ml — We recommend!", price:10, tag:"Σεφ"},
+  {id:19, cat:"spirits", subcat:"gin", subsubcat:"", nameEl:"Hendrick's", nameEn:"Hendrick's", descEl:"Scottish gin, 50ml", descEn:"Scottish gin, 50ml", price:10, tag:""},
+  {id:230, cat:"spirits", subcat:"gin", subsubcat:"", nameEl:"Monkey 47", nameEn:"Monkey 47", descEl:"Black Forest dry gin, 50ml", descEn:"Black Forest dry gin, 50ml", price:15, tag:""},
+  // SPIRITS - ΛΙΚΕΡ/ΑΠΕΡΙΤΙΦ
+  {id:20, cat:"spirits", subcat:"liker", subsubcat:"", nameEl:"Aperol", nameEn:"Aperol", descEl:"Italian aperitivo, 50ml", descEn:"Italian aperitivo, 50ml", price:6, tag:""},
+  {id:231, cat:"spirits", subcat:"liker", subsubcat:"", nameEl:"Lillet Rosé", nameEn:"Lillet Rosé", descEl:"Rose wine-based aperitif, 50ml", descEn:"Rose wine-based aperitif, 50ml", price:7, tag:""},
+  {id:232, cat:"spirits", subcat:"liker", subsubcat:"", nameEl:"Martini Bianco", nameEn:"Martini Bianco", descEl:"Italian vermouth, 50ml", descEn:"Italian vermouth, 50ml", price:7, tag:""},
+  {id:233, cat:"spirits", subcat:"liker", subsubcat:"", nameEl:"Martini Rosso", nameEn:"Martini Rosso", descEl:"Italian sweet vermouth, 50ml", descEn:"Italian sweet vermouth, 50ml", price:7, tag:""},
+  {id:234, cat:"spirits", subcat:"liker", subsubcat:"", nameEl:"Campari", nameEn:"Campari", descEl:"Italian bitter liqueur, 50ml", descEn:"Italian bitter liqueur, 50ml", price:8, tag:""},
+  {id:235, cat:"spirits", subcat:"liker", subsubcat:"", nameEl:"Luxardo Bitter Rosso", nameEn:"Luxardo Bitter Rosso", descEl:"Italian bitter liqueur, 50ml", descEn:"Italian bitter liqueur, 50ml", price:7, tag:""},
+  {id:236, cat:"spirits", subcat:"liker", subsubcat:"", nameEl:"Baileys", nameEn:"Baileys", descEl:"Irish cream liqueur, 50ml", descEn:"Irish cream liqueur, 50ml", price:7, tag:""},
+  {id:237, cat:"spirits", subcat:"liker", subsubcat:"", nameEl:"Kahlúa", nameEn:"Kahlúa", descEl:"Coffee liqueur, 50ml", descEn:"Coffee liqueur, 50ml", price:7, tag:""},
+  {id:238, cat:"spirits", subcat:"liker", subsubcat:"", nameEl:"Malibu", nameEn:"Malibu", descEl:"Coconut rum liqueur, 50ml", descEn:"Coconut rum liqueur, 50ml", price:7, tag:""},
+  // NON-ALCOHOLIC
+  {id:50, cat:"nonalc", subcat:"", subsubcat:"", nameEl:"Fruit Punch", nameEn:"Fruit Punch", descEl:"Φρέσκα φρούτα, χυμοί, grenadine", descEn:"Fresh fruits, juices, grenadine", price:6, tag:"Νέο"},
+  {id:51, cat:"nonalc", subcat:"", subsubcat:"", nameEl:"Beefeater 0%", nameEn:"Beefeater 0%", descEl:"Αλκοολοφρεές gin, 50ml", descEn:"Alcohol-free gin, 50ml", price:8, tag:"Νέο"},
+  {id:52, cat:"nonalc", subcat:"", subsubcat:"", nameEl:"Jiorginho 0%", nameEn:"Jiorginho 0%", descEl:"Beefeater 0%, σιρόπι μπαχαρικών, ανανάς, grapefruit", descEn:"Beefeater 0%, spice syrup, pineapple, grapefruit", price:8, tag:"Νέο"},
+  // ΜΠΥΡΕΣ
+  {id:22, cat:"bires", subcat:"", subsubcat:"", nameEl:"Έζα Lager", nameEn:"Eza Lager", descEl:"330ml", descEn:"330ml", price:5, tag:""},
+  {id:23, cat:"bires", subcat:"", subsubcat:"", nameEl:"Έζα Pils", nameEn:"Eza Pils", descEl:"330ml", descEn:"330ml", price:5, tag:""},
+  {id:24, cat:"bires", subcat:"", subsubcat:"", nameEl:"Έζα Free", nameEn:"Eza Free", descEl:"Αλκοολοφρεέ, 330ml", descEn:"Alcohol-free, 330ml", price:5, tag:""},
+  {id:25, cat:"bires", subcat:"", subsubcat:"", nameEl:"Έζα Radler Lemon", nameEn:"Eza Radler Lemon", descEl:"330ml", descEn:"330ml", price:6, tag:""},
+  {id:60, cat:"bires", subcat:"", subsubcat:"", nameEl:"A Toda Madre", nameEn:"A Toda Madre", descEl:"330ml", descEn:"330ml", price:6.5, tag:"Νέο"},
+  {id:61, cat:"bires", subcat:"", subsubcat:"", nameEl:"Odyssey Red", nameEn:"Odyssey Red", descEl:"330ml", descEn:"330ml", price:8, tag:""},
+  {id:62, cat:"bires", subcat:"", subsubcat:"", nameEl:"Odyssey White", nameEn:"Odyssey White", descEl:"330ml", descEn:"330ml", price:8, tag:""},
+  {id:63, cat:"bires", subcat:"", subsubcat:"", nameEl:"Odyssey Black", nameEn:"Odyssey Black", descEl:"330ml", descEn:"330ml", price:8, tag:""},
+  // ΚΡΑΣΙΑ - Ποτήρι Λευκό (150ml)
+  {id:26, cat:"krasia", subcat:"potiri", subsubcat:"potiri-lefko", nameEl:"Όμικρον Λευκό Ξηρό", nameEn:"Omicron White Dry", descEl:"Μοσχοφίλερο, 150ml", descEn:"Moschofilero, 150ml", price:5, tag:""},
+  {id:64, cat:"krasia", subcat:"potiri", subsubcat:"potiri-lefko", nameEl:"Όμικρον Λευκό Ημίγλυκο", nameEn:"Omicron White Semi-Sweet", descEl:"150ml", descEn:"150ml", price:5, tag:""},
+  {id:65, cat:"krasia", subcat:"potiri", subsubcat:"potiri-lefko", nameEl:"Άρωμα Λόφου", nameEn:"Aroma Lofou White", descEl:"Μοσχοφίλερο / Chardonnay / Μαλαγουζιά, 150ml", descEn:"Moschofilero / Chardonnay / Malagousia, 150ml", price:6, tag:""},
+  // ΚΡΑΣΙΑ - Ποτήρι Κόκκινο (150ml)
+  {id:27, cat:"krasia", subcat:"potiri", subsubcat:"potiri-kokkino", nameEl:"Όμικρον Κόκκινο Ξηρό", nameEn:"Omicron Red Dry", descEl:"150ml", descEn:"150ml", price:5, tag:""},
+  {id:66, cat:"krasia", subcat:"potiri", subsubcat:"potiri-kokkino", nameEl:"Όμικρον Κόκκινο Ημίγλυκο", nameEn:"Omicron Red Semi-Sweet", descEl:"150ml", descEn:"150ml", price:5, tag:""},
+  // ΚΡΑΣΙΑ - Ποτήρι Ροζέ (150ml)
+  {id:28, cat:"krasia", subcat:"potiri", subsubcat:"potiri-roze", nameEl:"Όμικρον Ροζέ Ξηρό", nameEn:"Omicron Rosé Dry", descEl:"150ml", descEn:"150ml", price:5, tag:""},
+  {id:67, cat:"krasia", subcat:"potiri", subsubcat:"potiri-roze", nameEl:"Όμικρον Ροζέ Ημίγλυκο", nameEn:"Omicron Rosé Semi-Sweet", descEl:"150ml", descEn:"150ml", price:5, tag:""},
+  {id:68, cat:"krasia", subcat:"potiri", subsubcat:"potiri-roze", nameEl:"3 Μάγισσες Ημίγλυκο", nameEn:"3 Witches Semi-Sweet Rosé", descEl:"150ml", descEn:"150ml", price:7, tag:""},
+  // ΚΡΑΣΙΑ - Μπουκάλι Λευκό (750ml)
+  {id:29, cat:"krasia", subcat:"boukali", subsubcat:"boukali-lefko", nameEl:"Όμικρον Λευκό Ξηρό", nameEn:"Omicron White Dry", descEl:"Μοσχοφίλερο, 750ml", descEn:"Moschofilero, 750ml", price:19, tag:""},
+  {id:69, cat:"krasia", subcat:"boukali", subsubcat:"boukali-lefko", nameEl:"Όμικρον Λευκό Ημίγλυκο", nameEn:"Omicron White Semi-Sweet", descEl:"750ml", descEn:"750ml", price:19, tag:""},
+  {id:70, cat:"krasia", subcat:"boukali", subsubcat:"boukali-lefko", nameEl:"Άρωμα Λόφου", nameEn:"Aroma Lofou White", descEl:"Μοσχοφίλερο / Chardonnay / Μαλαγουζιά, 750ml", descEn:"Moschofilero / Chardonnay / Malagousia, 750ml", price:25, tag:""},
+  {id:71, cat:"krasia", subcat:"boukali", subsubcat:"boukali-lefko", nameEl:"Παράγκα", nameEn:"Paragka", descEl:"750ml", descEn:"750ml", price:28, tag:""},
+  {id:72, cat:"krasia", subcat:"boukali", subsubcat:"boukali-lefko", nameEl:"Μέγα Σπήλαιο", nameEn:"Mega Spilaio", descEl:"750ml", descEn:"750ml", price:29, tag:""},
+  // ΚΡΑΣΙΑ - Μπουκάλι Κόκκινο (750ml)
+  {id:30, cat:"krasia", subcat:"boukali", subsubcat:"boukali-kokkino", nameEl:"Όμικρον Κόκκινο Ξηρό", nameEn:"Omicron Red Dry", descEl:"750ml", descEn:"750ml", price:19, tag:""},
+  {id:73, cat:"krasia", subcat:"boukali", subsubcat:"boukali-kokkino", nameEl:"Όμικρον Κόκκινο Ημίγλυκο", nameEn:"Omicron Red Semi-Sweet", descEl:"750ml", descEn:"750ml", price:19, tag:""},
+  {id:74, cat:"krasia", subcat:"boukali", subsubcat:"boukali-kokkino", nameEl:"Άρωμα Λόφου Κόκκινο", nameEn:"Aroma Lofou Red", descEl:"750ml", descEn:"750ml", price:25, tag:""},
+  // ΚΡΑΣΙΑ - Μπουκάλι Ροζέ (750ml)
+  {id:31, cat:"krasia", subcat:"boukali", subsubcat:"boukali-roze", nameEl:"Όμικρον Ροζέ Ξηρό", nameEn:"Omicron Rosé Dry", descEl:"750ml", descEn:"750ml", price:19, tag:""},
+  {id:75, cat:"krasia", subcat:"boukali", subsubcat:"boukali-roze", nameEl:"Όμικρον Ροζέ Ημίγλυκο", nameEn:"Omicron Rosé Semi-Sweet", descEl:"750ml", descEn:"750ml", price:19, tag:""},
+  {id:76, cat:"krasia", subcat:"boukali", subsubcat:"boukali-roze", nameEl:"Άρωμα Λόφου Ροζέ", nameEn:"Aroma Lofou Rosé", descEl:"750ml", descEn:"750ml", price:25, tag:""},
+  {id:77, cat:"krasia", subcat:"boukali", subsubcat:"boukali-roze", nameEl:"3 Μάγισσες Ημίγλυκο", nameEn:"3 Witches Semi-Sweet Rosé", descEl:"750ml", descEn:"750ml", price:30, tag:""},
+  // ΚΑΦΕΔΕΣ
+  {id:32, cat:"kafes", subcat:"kaf-kafes", subsubcat:"", nameEl:"Freddo Espresso", nameEn:"Freddo Espresso", descEl:"Διπλός espresso με παγάκια", descEn:"Double espresso with ice", price:4, tag:""},
+  {id:33, cat:"kafes", subcat:"kaf-kafes", subsubcat:"", nameEl:"Freddo Cappuccino", nameEn:"Freddo Cappuccino", descEl:"Espresso με αφρόγαλα και παγάκια", descEn:"Espresso with milk foam and ice", price:4, tag:"Bestseller"},
+  {id:34, cat:"kafes", subcat:"kaf-kafes", subsubcat:"", nameEl:"Espresso Μονό", nameEn:"Espresso Single", descEl:"Μονός espresso", descEn:"Single espresso", price:3, tag:""},
+  {id:239, cat:"kafes", subcat:"kaf-kafes", subsubcat:"", nameEl:"Espresso Διπλό", nameEn:"Espresso Double", descEl:"Διπλός espresso", descEn:"Double espresso", price:4, tag:""},
+  {id:240, cat:"kafes", subcat:"kaf-kafes", subsubcat:"", nameEl:"Ελληνικός Μονός", nameEn:"Greek Coffee Single", descEl:"Παραδοσιακός ελληνικός καφές", descEn:"Traditional Greek coffee", price:3, tag:""},
+  {id:241, cat:"kafes", subcat:"kaf-kafes", subsubcat:"", nameEl:"Ελληνικός Διπλός", nameEn:"Greek Coffee Double", descEl:"Διπλός παραδοσιακός ελληνικός καφές", descEn:"Double traditional Greek coffee", price:4, tag:""},
+  {id:242, cat:"kafes", subcat:"kaf-kafes", subsubcat:"", nameEl:"Φραπές", nameEn:"Frappé", descEl:"Παγωμένος αφρόκαφές", descEn:"Iced foam coffee", price:4, tag:""},
+  {id:243, cat:"kafes", subcat:"kaf-kafes", subsubcat:"", nameEl:"Αμερικάνο Μονό", nameEn:"Americano Single", descEl:"Espresso με ζεστό νερό", descEn:"Espresso with hot water", price:3, tag:""},
+  {id:244, cat:"kafes", subcat:"kaf-kafes", subsubcat:"", nameEl:"Αμερικάνο Διπλό", nameEn:"Americano Double", descEl:"Διπλός espresso με ζεστό νερό", descEn:"Double espresso with hot water", price:4, tag:""},
+  {id:37, cat:"kafes", subcat:"kaf-milk", subsubcat:"", nameEl:"Milkshake Φράουλα", nameEn:"Strawberry Milkshake", descEl:"Παγωτό φράουλα, γάλα, σαντιγί", descEn:"Strawberry ice cream, milk, cream", price:5, tag:""},
+  {id:38, cat:"kafes", subcat:"kaf-milk", subsubcat:"", nameEl:"Milkshake Μπισκότο", nameEn:"Cookie Milkshake", descEl:"Παγωτό μπισκότο, γάλα, σαντιγί", descEn:"Cookie ice cream, milk, cream", price:5, tag:""},
+  {id:120, cat:"kafes", subcat:"kaf-milk", subsubcat:"", nameEl:"Milkshake Σοκολάτα", nameEn:"Chocolate Milkshake", descEl:"Παγωτό σοκολάτα, γάλα, σαντιγί", descEn:"Chocolate ice cream, milk, cream", price:5, tag:""},
+  {id:121, cat:"kafes", subcat:"kaf-milk", subsubcat:"", nameEl:"Milkshake Βανίλια", nameEn:"Vanilla Milkshake", descEl:"Παγωτό βανίλια, γάλα, σαντιγί", descEn:"Vanilla ice cream, milk, cream", price:5, tag:""},
+  {id:38, cat:"kafes", subcat:"kaf-milk", subsubcat:"", nameEl:"Milkshake Βανίλια", nameEn:"Vanilla Milkshake", descEl:"Παγωτό βανίλια, γάλα, σαντιγί", descEn:"Vanilla ice cream, milk, cream", price:7, tag:""},
+  {id:39, cat:"kafes", subcat:"kaf-xymoi", subsubcat:"", nameEl:"Φυσικός Χυμός Πορτοκάλι", nameEn:"Fresh Orange Juice", descEl:"Φυσικός χυμός πορτοκάλι", descEn:"Fresh squeezed orange juice", price:5, tag:""},
+  {id:40, cat:"kafes", subcat:"kaf-xymoi", subsubcat:"", nameEl:"Χυμός Συσκευασίας", nameEn:"Packaged Juice", descEl:"Πορτοκάλι, λεμόνι, ανανάς ή βύσσινο", descEn:"Orange, lemon, pineapple or sour cherry", price:4, tag:""},
+  {id:41, cat:"kafes", subcat:"kaf-tsai", subsubcat:"", nameEl:"Iced Tea Λεμόνι / Ροδάκινο / Πράσινο", nameEn:"Iced Tea Lemon / Peach / Green", descEl:"Παγωμένο τσάι, επιλογή γεύσης", descEn:"Iced tea, choice of flavour", price:4, tag:""},
+  {id:42, cat:"kafes", subcat:"kaf-anaps", subsubcat:"", nameEl:"Coca-Cola Original", nameEn:"Coca-Cola Original", descEl:"330ml παγωμένο", descEn:"330ml chilled", price:4, tag:""},
+  {id:43, cat:"kafes", subcat:"kaf-anaps", subsubcat:"", nameEl:"Coca-Cola Zero", nameEn:"Coca-Cola Zero", descEl:"330ml παγωμένο", descEn:"330ml chilled", price:4, tag:""},
+  {id:122, cat:"kafes", subcat:"kaf-anaps", subsubcat:"", nameEl:"Τσίκι Lemon & Jasmine", nameEn:"Tsiki Lemon & Jasmine", descEl:"Ανθρακούχο αναψυκτικό", descEn:"Sparkling soft drink", price:4.5, tag:""},
+  {id:123, cat:"kafes", subcat:"kaf-anaps", subsubcat:"", nameEl:"Τσίκι Pink Grapefruit Soda", nameEn:"Tsiki Pink Grapefruit Soda", descEl:"Ανθρακούχο αναψυκτικό", descEn:"Sparkling soft drink", price:4.5, tag:""},
+  {id:124, cat:"kafes", subcat:"kaf-anaps", subsubcat:"", nameEl:"San Pellegrino", nameEn:"San Pellegrino", descEl:"Ανθρακούχο νερό", descEn:"Sparkling water", price:4, tag:""},
+  {id:44, cat:"kafes", subcat:"kaf-energy", subsubcat:"", nameEl:"Red Bull", nameEn:"Red Bull", descEl:"250ml", descEn:"250ml", price:5, tag:""},
+  // SNACKS
+  {id:46, cat:"snacks", subcat:"", subsubcat:"", nameEl:"Toast Τυρί & Γαλοπούλα", nameEn:"Cheese & Turkey Toast", descEl:"Τυρί, γαλοπούλα, ψωμί τοστ", descEn:"Cheese, turkey, toast bread", price:4, tag:""},
+  // ΓΡΑΝΙΤΕΣ
+  {id:53, cat:"granites", subcat:"", subsubcat:"", nameEl:"Γρανίτα Λεμόνι / Φράουλα", nameEn:"Lemon / Strawberry Granita", descEl:"Φρέσκια γρανίτα, επιλογή γεύσης", descEn:"Fresh granita, choice of flavour", price:5, tag:""},
+];
+
+// ══ STATE ════════════════════════════════════════════════════════
+let cats = [];
+let items = [];
+let lang = "el";
+let activeCat = "";
+let activeSubcat = "";
+let activeSubsubcat = "";
+let adminActiveCat = "";
+
+const TAG_STYLE = {
+  Bestseller:{bg:"#FFF3C4",color:"#7B5200",border:"#E8C840"},
+  "Chef's":{bg:"#F0FFF4",color:"#1A5C30",border:"#68D391"},
+  Σεφ:{bg:"#F0FFF4",color:"#1A5C30",border:"#68D391"},
+  Νέο:{bg:"#E6F6FF",color:"#0D5C8A",border:"#63B3ED"},
+  New:{bg:"#E6F6FF",color:"#0D5C8A",border:"#63B3ED"},
+};
+
+// ══ STORAGE ══════════════════════════════════════════════════════
+function loadData(){
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if(s){ const d=JSON.parse(s); cats=d.cats; items=d.items; }
+    else { cats=JSON.parse(JSON.stringify(DEFAULT_CATS)); items=JSON.parse(JSON.stringify(DEFAULT_ITEMS)); }
+  } catch { cats=JSON.parse(JSON.stringify(DEFAULT_CATS)); items=JSON.parse(JSON.stringify(DEFAULT_ITEMS)); }
+}
+function saveData(){ try{ localStorage.setItem(STORAGE_KEY,JSON.stringify({cats,items})); }catch{} }
+
+// ══ HELPERS ══════════════════════════════════════════════════════
+function getCat(id){ return cats.find(c=>c.id===id); }
+function getSubcat(catId,subId){ const c=getCat(catId); return c?c.subcats.find(s=>s.id===subId):null; }
+function catName(c){ return lang==="el"?c.nameEl:c.nameEn; }
+function subcatName(s){ return lang==="el"?s.nameEl:s.nameEn; }
+function tagHtml(tag){
+  if(!tag)return"";
+  const ts=TAG_STYLE[tag];
+  if(!ts)return"";
+  const lbl=(tag==="Σεφ"&&lang==="en")?"Chef's":(tag==="Νέο"&&lang==="en")?"New":tag;
+  return`<span class="tag" style="background:${ts.bg};color:${ts.color};border:1px solid ${ts.border}">${lbl}</span>`;
+}
+
+// ══ LANG ═════════════════════════════════════════════════════════
+function setLang(l){
+  lang=l;
+  document.getElementById("btn-el").classList.toggle("active",l==="el");
+  document.getElementById("btn-en").classList.toggle("active",l==="en");
+  document.getElementById("search-input").placeholder=l==="el"?"🔍  Αναζήτηση...":"🔍  Search...";
+  renderTabs(); renderSubcats(); renderWinecats(); renderMenu();
+}
+
+// ══ TABS ═════════════════════════════════════════════════════════
+function renderTabs(){
+  if(!cats.length)return;
+  if(!activeCat||!getCat(activeCat)) activeCat=cats[0].id;
+  document.getElementById("tabs-container").innerHTML=cats.map(c=>`
+    <button class="tab-btn${activeCat===c.id?" active":""}" onclick="setTab('${c.id}')">
+      ${c.emoji||""} ${catName(c)}
+    </button>`).join("");
+}
+function setTab(id){
+  activeCat=id; activeSubcat=""; activeSubsubcat="";
+  const c=getCat(id);
+  if(c&&c.subcats&&c.subcats.length) activeSubcat=c.subcats[0].id;
+  const sc=getSubcat(activeCat,activeSubcat);
+  if(sc&&sc.subsubs&&sc.subsubs.length) activeSubsubcat=sc.subsubs[0].id;
+  renderTabs(); renderSubcats(); renderWinecats(); renderMenu();
+}
+
+function renderSubcats(){
+  const c=getCat(activeCat);
+  const wrap=document.getElementById("subcats-wrap");
+  if(!c||!c.subcats||!c.subcats.length){ wrap.style.display="none"; return; }
+  wrap.style.display="block";
+  document.getElementById("subcats-container").innerHTML=c.subcats.map(s=>`
+    <button class="subcat-btn${activeSubcat===s.id?" active":""}" onclick="setSubcat('${s.id}')">
+      ${subcatName(s)}
+    </button>`).join("");
+}
+function setSubcat(id){
+  activeSubcat=id; activeSubsubcat="";
+  const sc=getSubcat(activeCat,id);
+  if(sc&&sc.subsubs&&sc.subsubs.length) activeSubsubcat=sc.subsubs[0].id;
+  renderSubcats(); renderWinecats(); renderMenu();
+}
+
+function renderWinecats(){
+  const sc=getSubcat(activeCat,activeSubcat);
+  const wrap=document.getElementById("winecats-wrap");
+  if(!sc||!sc.subsubs||!sc.subsubs.length){ wrap.style.display="none"; return; }
+  wrap.style.display="block";
+  document.getElementById("winecats-container").innerHTML=sc.subsubs.map(s=>`
+    <button class="winecat-btn${activeSubsubcat===s.id?" active":""}" onclick="setSubsubcat('${s.id}')">
+      ${lang==="el"?s.nameEl:s.nameEn}
+    </button>`).join("");
+}
+function setSubsubcat(id){ activeSubsubcat=id; renderWinecats(); renderMenu(); }
+
+// ══ MENU RENDER ══════════════════════════════════════════════════
+function renderMenu(){
+  const q=document.getElementById("search-input").value.toLowerCase();
+  const wrap=document.getElementById("items-container");
+  let filtered;
+  if(q.length>0){
+    // Search mode: search ALL items across all categories
+    filtered=items.filter(i=>{
+      const n=lang==="el"?i.nameEl:i.nameEn;
+      const d=lang==="el"?i.descEl:i.descEn;
+      return n.toLowerCase().includes(q)||d.toLowerCase().includes(q);
+    });
+  } else {
+    filtered=items.filter(i=>{
+      if(i.cat!==activeCat)return false;
+      const c=getCat(activeCat);
+      if(c&&c.subcats&&c.subcats.length&&activeSubcat&&i.subcat!==activeSubcat)return false;
+      const sc=getSubcat(activeCat,activeSubcat);
+      if(sc&&sc.subsubs&&sc.subsubs.length&&activeSubsubcat&&i.subsubcat!==activeSubsubcat)return false;
+      return true;
+    });
+  }
+  if(!filtered.length){ wrap.innerHTML=`<div class="empty">${lang==="el"?"Δεν βρέθηκαν προϊόντα 🍹":"No items found 🍹"}</div>`; return; }
+  wrap.innerHTML=filtered.map(item=>{
+    const name=lang==="el"?item.nameEl:item.nameEn;
+    const desc=lang==="el"?item.descEl:item.descEn;
+    return`<div class="item-card">
+      <div class="item-info">
+        <div class="item-name-row"><span class="item-name">${name}</span>${tagHtml(item.tag)}</div>
+        <div class="item-desc">${desc}</div>
+      </div>
+      <div class="item-price">${item.price}€</div>
+    </div>`;
+  }).join("");
+}
+
+// ══ PIN ══════════════════════════════════════════════════════════
+function openPinModal(){ document.getElementById("pin-input").value=""; document.getElementById("pin-err").style.display="none"; document.getElementById("pin-modal").classList.remove("hidden"); setTimeout(()=>document.getElementById("pin-input").focus(),100); }
+function closePinModal(){ document.getElementById("pin-modal").classList.add("hidden"); }
+function checkPin(){
+  if(document.getElementById("pin-input").value===ADMIN_PIN){ closePinModal(); showAdmin(); }
+  else{ document.getElementById("pin-err").style.display="block"; document.getElementById("pin-input").classList.add("error"); setTimeout(()=>document.getElementById("pin-input").classList.remove("error"),600); }
+}
+
+// ══ ADMIN ════════════════════════════════════════════════════════
+function showAdmin(){
+  document.getElementById("menu-view").style.display="none";
+  document.getElementById("admin-view").style.display="block";
+  if(!adminActiveCat&&cats.length) adminActiveCat=cats[0].id;
+  renderAdminTabs(); renderAdminList();
+}
+function showMenu(){
+  document.getElementById("admin-view").style.display="none";
+  document.getElementById("menu-view").style.display="block";
+}
+function renderAdminTabs(){
+  document.getElementById("admin-tabs").innerHTML=cats.map(c=>`
+    <button class="admin-tab${adminActiveCat===c.id?" active":""}" onclick="setAdminTab('${c.id}')">
+      ${c.emoji||""} ${c.nameEl}
+    </button>`).join("");
+}
+function setAdminTab(id){ adminActiveCat=id; renderAdminTabs(); renderAdminList(); }
+
+function renderAdminList(){
+  const c=getCat(adminActiveCat);
+  if(!c){ document.getElementById("admin-list").innerHTML=""; return; }
+  let html="";
+  const catItems=items.filter(i=>i.cat===adminActiveCat&&!i.subcat);
+
+  if(c.subcats&&c.subcats.length){
+    c.subcats.forEach(sc=>{
+      html+=`<div class="subcat-section">
+        <div class="subcat-header">
+          <span>📂 ${sc.nameEl}</span>
+          <div class="subcat-actions">
+            <button class="btn-small-add" onclick="openItemFormInSubcat('${c.id}','${sc.id}','')">+ Προϊόν</button>
+            <button class="btn-small-del" onclick="deleteSubcat('${c.id}','${sc.id}')">🗑️ Υποκατ.</button>
+          </div>
+        </div>`;
+      // subsubs
+      if(sc.subsubs&&sc.subsubs.length){
+        sc.subsubs.forEach(ss=>{
+          html+=`<div style="margin-left:16px;margin-bottom:12px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:rgba(107,63,160,0.07);border-radius:8px;margin-bottom:6px">
+              <span style="font-size:13px;color:#6B3FA0;font-weight:600">🍇 ${ss.nameEl}</span>
+              <div style="display:flex;gap:5px">
+                <button class="btn-small-add" onclick="openItemFormInSubcat('${c.id}','${sc.id}','${ss.id}')">+ Προϊόν</button>
+                <button class="btn-small-del" onclick="deleteSubsubcat('${c.id}','${sc.id}','${ss.id}')">🗑️</button>
+              </div>
+            </div>`;
+          items.filter(i=>i.cat===adminActiveCat&&i.subcat===sc.id&&i.subsubcat===ss.id).forEach(item=>{
+            html+=adminItemRow(item);
+          });
+          html+=`</div>`;
+        });
+        // items in subcat but no subsubcat
+        items.filter(i=>i.cat===adminActiveCat&&i.subcat===sc.id&&!i.subsubcat).forEach(item=>{ html+=adminItemRow(item); });
+      } else {
+        items.filter(i=>i.cat===adminActiveCat&&i.subcat===sc.id).forEach(item=>{ html+=adminItemRow(item); });
+      }
+      html+=`</div>`;
+    });
+  }
+  // items with no subcat
+  items.filter(i=>i.cat===adminActiveCat&&!i.subcat).forEach(item=>{ html+=adminItemRow(item); });
+
+  document.getElementById("admin-list").innerHTML=html||`<div style="color:#999;text-align:center;padding:24px">Δεν υπάρχουν προϊόντα ακόμα</div>`;
+}
+
+function adminItemRow(item){
+  return`<div class="admin-row">
+    <div class="admin-row-info">
+      <div class="admin-row-name">${item.nameEl}</div>
+      <div class="admin-row-en">${item.nameEn}</div>
+      <div class="admin-row-desc">${item.descEl}</div>
+    </div>
+    <div class="admin-row-price">${item.price}€</div>
+    <button class="btn-edit" onclick="openItemForm(${item.id})">✏️</button>
+    <button class="btn-del" onclick="deleteItem(${item.id})">🗑️</button>
+  </div>`;
+}
+
+function deleteItem(id){ if(!confirm("Διαγραφή προϊόντος;"))return; items=items.filter(i=>i.id!==id); saveData(); renderAdminList(); showToast(); }
+function deleteSubcat(catId,subId){
+  if(!confirm("Διαγραφή υποκατηγορίας και όλων των προϊόντων της;"))return;
+  const c=getCat(catId); c.subcats=c.subcats.filter(s=>s.id!==subId);
+  items=items.filter(i=>!(i.cat===catId&&i.subcat===subId));
+  saveData(); renderAdminList(); showToast();
+}
+function deleteSubsubcat(catId,subId,ssId){
+  if(!confirm("Διαγραφή υπο-υποκατηγορίας;"))return;
+  const sc=getSubcat(catId,subId); sc.subsubs=sc.subsubs.filter(s=>s.id!==ssId);
+  items=items.filter(i=>!(i.cat===catId&&i.subcat===subId&&i.subsubcat===ssId));
+  saveData(); renderAdminList(); showToast();
+}
+
+// ══ ITEM FORM ════════════════════════════════════════════════════
+function updateSubcatOptions(){
+  const catId=document.getElementById("f-cat").value;
+  const c=getCat(catId);
+  const sel=document.getElementById("f-subcat");
+  sel.innerHTML=`<option value="">— Χωρίς —</option>`+(c&&c.subcats?c.subcats.map(s=>`<option value="${s.id}">${s.nameEl}</option>`).join(""):"");
+  updateSubsubcatOptions();
+}
+function updateSubsubcatOptions(){
+  const catId=document.getElementById("f-cat").value;
+  const subId=document.getElementById("f-subcat").value;
+  const sc=getSubcat(catId,subId);
+  const sel=document.getElementById("f-subsubcat");
+  sel.innerHTML=`<option value="">— Χωρίς —</option>`+(sc&&sc.subsubs?sc.subsubs.map(s=>`<option value="${s.id}">${s.nameEl}</option>`).join(""):"");
+}
+function openItemForm(id){
+  const item=id?items.find(i=>i.id===id):null;
+  document.getElementById("item-form-title").textContent=item?"✏️ Επεξεργασία":"➕ Νέο Προϊόν";
+  document.getElementById("f-id").value=item?item.id:"";
+  document.getElementById("f-cat").innerHTML=cats.map(c=>`<option value="${c.id}">${c.nameEl}</option>`).join("");
+  document.getElementById("f-cat").value=item?item.cat:(adminActiveCat||cats[0].id);
+  updateSubcatOptions();
+  document.getElementById("f-subcat").value=item?item.subcat:"";
+  updateSubsubcatOptions();
+  document.getElementById("f-subsubcat").value=item?item.subsubcat:"";
+  document.getElementById("f-subcat").onchange=updateSubsubcatOptions;
+  document.getElementById("f-nameEl").value=item?item.nameEl:"";
+  document.getElementById("f-nameEn").value=item?item.nameEn:"";
+  document.getElementById("f-descEl").value=item?item.descEl:"";
+  document.getElementById("f-descEn").value=item?item.descEn:"";
+  document.getElementById("f-price").value=item?item.price:"";
+  document.getElementById("f-tag").value=item?item.tag:"";
+  document.getElementById("item-form-modal").classList.remove("hidden");
+}
+function openItemFormInSubcat(catId,subId,ssId){
+  openItemForm(null);
+  document.getElementById("f-cat").value=catId;
+  updateSubcatOptions();
+  document.getElementById("f-subcat").value=subId;
+  updateSubsubcatOptions();
+  document.getElementById("f-subsubcat").value=ssId;
+}
+function closeItemForm(){ document.getElementById("item-form-modal").classList.add("hidden"); }
+function saveItemForm(){
+  const nameEl=document.getElementById("f-nameEl").value.trim();
+  const price=parseFloat(document.getElementById("f-price").value);
+  if(!nameEl||isNaN(price)){ alert("Συμπλήρωσε Όνομα (ΕΛ) και Τιμή"); return; }
+  const id=document.getElementById("f-id").value;
+  const entry={
+    id:id?parseInt(id):Date.now(),
+    cat:document.getElementById("f-cat").value,
+    subcat:document.getElementById("f-subcat").value,
+    subsubcat:document.getElementById("f-subsubcat").value,
+    nameEl, nameEn:document.getElementById("f-nameEn").value.trim(),
+    descEl:document.getElementById("f-descEl").value.trim(),
+    descEn:document.getElementById("f-descEn").value.trim(),
+    price, tag:document.getElementById("f-tag").value,
+  };
+  if(id) items=items.map(i=>i.id===parseInt(id)?entry:i);
+  else items.push(entry);
+  saveData(); closeItemForm(); renderAdminList(); showToast();
+}
+
+// ══ CAT FORM ═════════════════════════════════════════════════════
+function updateCatFormFields(){
+  const t=document.getElementById("cf-type").value;
+  document.getElementById("cf-cat-fields").style.display=t==="cat"?"block":"none";
+  document.getElementById("cf-subcat-fields").style.display=t!=="cat"?"block":"none";
+  document.getElementById("cf-subsubcat-extra").style.display=t==="subsubcat"?"block":"none";
+  if(t!=="cat"){
+    document.getElementById("cf-parent-cat").innerHTML=cats.map(c=>`<option value="${c.id}">${c.nameEl}</option>`).join("");
+    updateCfSubcatOptions();
+  }
+}
+function updateCfSubcatOptions(){
+  const catId=document.getElementById("cf-parent-cat").value;
+  const c=getCat(catId);
+  document.getElementById("cf-parent-subcat").innerHTML=(c&&c.subcats?c.subcats.map(s=>`<option value="${s.id}">${s.nameEl}</option>`).join(""):"");
+}
+function openCatForm(){
+  document.getElementById("cf-type").value="cat";
+  updateCatFormFields();
+  document.getElementById("cf-nameEl").value="";
+  document.getElementById("cf-nameEn").value="";
+  document.getElementById("cf-emoji").value="";
+  document.getElementById("cf-sub-nameEl").value="";
+  document.getElementById("cf-sub-nameEn").value="";
+  document.getElementById("cat-form-modal").classList.remove("hidden");
+}
+function closeCatForm(){ document.getElementById("cat-form-modal").classList.add("hidden"); }
+function saveCatForm(){
+  const t=document.getElementById("cf-type").value;
+  const newId="id_"+Date.now();
+  if(t==="cat"){
+    const nameEl=document.getElementById("cf-nameEl").value.trim();
+    if(!nameEl){ alert("Βάλε όνομα"); return; }
+    cats.push({ id:newId, emoji:document.getElementById("cf-emoji").value.trim()||"🍽️",
+      nameEl, nameEn:document.getElementById("cf-nameEn").value.trim()||nameEl, subcats:[] });
+  } else if(t==="subcat"){
+    const catId=document.getElementById("cf-parent-cat").value;
+    const nameEl=document.getElementById("cf-sub-nameEl").value.trim();
+    if(!nameEl){ alert("Βάλε όνομα"); return; }
+    const c=getCat(catId);
+    c.subcats.push({ id:newId, nameEl, nameEn:document.getElementById("cf-sub-nameEn").value.trim()||nameEl, subsubs:[] });
+  } else {
+    const catId=document.getElementById("cf-parent-cat").value;
+    const subId=document.getElementById("cf-parent-subcat").value;
+    const nameEl=document.getElementById("cf-sub-nameEl").value.trim();
+    if(!nameEl){ alert("Βάλε όνομα"); return; }
+    const sc=getSubcat(catId,subId);
+    if(sc) sc.subsubs.push({ id:newId, nameEl, nameEn:document.getElementById("cf-sub-nameEn").value.trim()||nameEl });
+  }
+  saveData(); closeCatForm(); renderAdminTabs(); renderAdminList(); showToast();
+}
+
+// ══ EXPORT ═══════════════════════════════════════════════════════
+function exportData(){
+  const data = JSON.stringify({cats, items}, null, 2);
+  const blob = new Blob([data], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "barraca-backup-" + new Date().toISOString().slice(0,10) + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast();
+}
+
+// ══ TOAST ════════════════════════════════════════════════════════
+function showToast(){ const t=document.getElementById("toast"); t.style.display="block"; setTimeout(()=>t.style.display="none",2000); }
+
+// ══ INIT ═════════════════════════════════════════════════════════
+loadData();
+activeCat=cats[0].id;
+const firstCat=getCat(activeCat);
+if(firstCat&&firstCat.subcats&&firstCat.subcats.length){
+  activeSubcat=firstCat.subcats[0].id;
+  const firstSc=getSubcat(activeCat,activeSubcat);
+  if(firstSc&&firstSc.subsubs&&firstSc.subsubs.length) activeSubsubcat=firstSc.subsubs[0].id;
+}
+adminActiveCat=cats[0].id;
+renderTabs(); renderSubcats(); renderWinecats(); renderMenu();
+</script>
+</body>
+</html>
